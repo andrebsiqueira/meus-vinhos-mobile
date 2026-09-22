@@ -173,7 +173,11 @@ def show_regions():
                 caminho_imagem = localizar_imagem_regiao(
                     nome_arquivo
                 )
-
+            else:
+                caminho_imagem = localizar_imagem_regiao(
+                    "sem_imagem_regiao.jpg"
+                )
+                
             pais = (
                 str(linha["pais"])
                 if linha["pais"]
