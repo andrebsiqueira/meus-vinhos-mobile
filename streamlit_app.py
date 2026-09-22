@@ -1,10 +1,13 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
 
-#with st.sidebar:
-#    selected = option_menu("Main Menu", ["Home", 'Settings'], 
-#        icons=['house', 'gear'], menu_icon="cast", default_index=1)
-#    selected
+from views.home import show_home
+from views.my_wines import show_my_wines
+from views.wineries import show_wineries
+from views.regions import show_regions
+from views.ocr import show_ocr
+from views.people import show_people
+from views.settings import show_settings
 
 with st.sidebar:
 
@@ -13,11 +16,11 @@ with st.sidebar:
         [
             "Home",
             "My Wines",
-            "Vinícolas",
-            "Regiões",
+            "Wineries",
+            "Regions",
             "OCR",
-            "Pessoas",
-            "Administração"
+            "People",
+            "Settings"
         ],
         icons=[
             "house",
@@ -32,25 +35,26 @@ with st.sidebar:
         default_index=0
     )
 
-st.write("Você selecionou:", selected)
+#st.write("You selected:", selected)
 
-if selected == "Início":
-    mostrar_inicio()
+if selected == "Home":
+    show_home()
 
-elif selected == "Meus Vinhos":
-    mostrar_meus_vinhos()
+elif selected == "My Wines":
+    show_my_wines()
 
-elif selected == "Vinícolas":
-    mostrar_vinicolas()
+elif selected == "Wineries":
+    show_wineries()
 
-elif selected == "Regiões":
-    mostrar_regioes()
+elif selected == "Regions":
+    show_regions()
 
 elif selected == "OCR":
-    mostrar_ocr()
+    show_ocr()
 
-elif selected == "Pessoas":
-    mostrar_pessoas()
+elif selected == "People":
+    show_people()
 
-elif selected == "Administração":
-    mostrar_administracao()
+elif selected == "Settings":
+    show_settings()
+    
