@@ -59,7 +59,7 @@ def show_regions():
     with col1:
 
         pais_exibido = st.selectbox(
-                "Filter regions by country",
+                "Filter regions by Country",
                 options=filtro_pais_regiao,
                 index=0,
                 key="pais_selecionado"
