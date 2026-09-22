@@ -10,7 +10,7 @@ from funcoes import (
 def show_regions():
 
     st.markdown(
-        '<div class="secao">🌎 Regiões</div>',
+        '<div class="secao">🌎 Regions</div>',
         unsafe_allow_html=True
     )
 
@@ -50,26 +50,24 @@ def show_regions():
 
         filtro_pais_regiao.append(texto)
 
-    col_pesquisa, col_paises_cadastrados = st.columns([3, 1])
-
-    with col_pesquisa:
-
-        st.markdown(
+    st.markdown(
             "Explore sua coleção de vinhos pelas regiões produtoras."
         )
 
-        st.caption(
-            "Imagens geradas com ajuda do Google Gemini IA e pesquisa na internet."
-        )
+    col1, col2 = st.columns([2, 1])
 
-    with col_paises_cadastrados:
+    with col1:
 
         pais_exibido = st.selectbox(
-            "🌎 País",
-            options=filtro_pais_regiao,
-            index=0,
-            key="pais_selecionado"
-        )
+                "Filtrar regiões",
+                options=filtro_pais_regiao,
+                index=0,
+                key="pais_selecionado"
+            )
+
+    with col2:
+
+        st.write("")
 
     # Recuperar somente o nome do país
     if pais_exibido == "TODOS":
@@ -156,7 +154,6 @@ def show_regions():
     @st.cache_data
     def carregar_imagem_regiao(caminho):
         return caminho.read_bytes()
-
 
     if df_regioes.empty:
 
@@ -259,3 +256,4 @@ def show_regions():
 
                 st.session_state["regiao_selecionada"] = nome_regiao
                 st.session_state["vinho_selecionado"] = None
+                
