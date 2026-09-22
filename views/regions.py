@@ -10,7 +10,7 @@ from funcoes import (
 def show_regions():
 
     st.markdown(
-        '<div class="secao" style="font-size: 32px;">🌎 Regions</div>',
+        '<div class="secao" style="font-size: 28px;">🌎 Regions</div>',
         unsafe_allow_html=True
     )
 
@@ -50,8 +50,8 @@ def show_regions():
 
         filtro_pais_regiao.append(texto)
 
-    st.markdown(
-            "Explore sua coleção de vinhos pelas regiões produtoras."
+    st.info(
+            "Explore your wine collection by wine-producing regions."
         )
 
     col1, col2 = st.columns([2, 1])
@@ -59,7 +59,7 @@ def show_regions():
     with col1:
 
         pais_exibido = st.selectbox(
-                "Filtrar regiões",
+                "Filter regions by country",
                 options=filtro_pais_regiao,
                 index=0,
                 key="pais_selecionado"
