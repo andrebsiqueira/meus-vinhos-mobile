@@ -1,3 +1,8 @@
 streamlit
 streamlit_option_menu
 pandas
+plotly
+pillow
+pillow-heif
+rapidocr-onnxruntime
+google-genai
