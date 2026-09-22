@@ -10,7 +10,7 @@ from funcoes import (
 def show_regions():
 
     st.markdown(
-        '<div class="secao">🌎 Regions</div>',
+        '<div class="secao" style="font-size: 32px;">🌎 Regions</div>',
         unsafe_allow_html=True
     )
 
