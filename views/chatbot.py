@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 
+import os
+
 from banco import conectar
 
 from google import genai
@@ -13,7 +15,8 @@ def show_chatbot():
     )
 
     # Acessa a chave guardada nos segredos
-    google_key = st.secrets["GOOGLE_API_KEY"]
+    # google_key = st.secrets["GOOGLE_API_KEY"]
+    google_key = os.getenv["GOOGLE_API_KEY"]
     
     # Configura a API do Google
     client = genai.Client(api_key=google_key)
