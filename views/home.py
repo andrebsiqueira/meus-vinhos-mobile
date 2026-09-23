@@ -6,6 +6,6 @@ from banco import conectar
 def show_home():
 
     st.markdown(
-        '<div class="secao">🍷 Home</div>',
+        '<div class="secao" style="font-size: 28px;">🍷 Home</div>',
         unsafe_allow_html=True
     )

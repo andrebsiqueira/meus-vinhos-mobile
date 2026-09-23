@@ -35,7 +35,7 @@ def show_regions():
     conexao.close()
 
     # Montar as opções do selectbox
-    filtro_pais_regiao = ["TODOS"]
+    filtro_pais_regiao = ["ALL"]
 
     for _, linha in df_paises.iterrows():
 
@@ -45,7 +45,7 @@ def show_regions():
         texto = (
             f"{pais}: "
             f"{quantidade} "
-            f"{'região' if quantidade == 1 else 'regiões'}"
+            f"{'region' if quantidade == 1 else 'regions'}"
         )
 
         filtro_pais_regiao.append(texto)
@@ -59,7 +59,7 @@ def show_regions():
     with col1:
 
         pais_exibido = st.selectbox(
-                "Filter regions by Country",
+                "Filter Regions by Country",
                 options=filtro_pais_regiao,
                 index=0,
                 key="pais_selecionado"
@@ -70,7 +70,7 @@ def show_regions():
         st.write("")
 
     # Recuperar somente o nome do país
-    if pais_exibido == "TODOS":
+    if pais_exibido == "ALL":
         pais_selecionado = None
     else:
         pais_selecionado = pais_exibido.split(":")[0].strip()
@@ -128,7 +128,7 @@ def show_regions():
 
     params = []
 
-    if pais_selecionado != "TODOS" and pais_selecionado != None:
+    if pais_selecionado != "ALL" and pais_selecionado != None:
         sql += """
             AND v.pais = ?
         """
@@ -177,7 +177,7 @@ def show_regions():
                 caminho_imagem = localizar_imagem_regiao(
                     "sem_imagem_regiao.jpg"
                 )
-                
+
             pais = (
                 str(linha["pais"])
                 if linha["pais"]
@@ -223,7 +223,7 @@ def show_regions():
             st.markdown(
                 f"### {nome_regiao}, {pais}"
             )
-            
+
             # =================================================
             # MÉTRICAS
             # =================================================

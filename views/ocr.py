@@ -6,6 +6,6 @@ from banco import conectar
 def show_ocr():
 
     st.markdown(
-        '<div class="secao">🍷 OCR</div>',
+        '<div class="secao" style="font-size: 28px;">🍷 OCR</div>',
         unsafe_allow_html=True
     )
