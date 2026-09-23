@@ -11,6 +11,13 @@ google_key = st.secrets["GOOGLE_API_KEY"]
 # Configura a API do Google
 client = genai.Client(api_key=google_key)
 
+resposta = client.models.generate_content(
+    model="gemini-3.5-flash",
+    contents="Qual é a principal uva utilizada no vinho Malbec argentino?"
+)
+
+st.write(resposta.text)
+
 def show_chatbot():
 
     st.markdown(
