@@ -8,6 +8,9 @@ from google import genai
 # Acessa a chave guardada nos segredos
 google_key = st.secrets["GOOGLE_API_KEY"]
 
+# Configura a API do Google
+genai.configure(api_key=google_key)
+
 #client = genai.Client(api_key=st.secrets["GOOGLE_API_KEY"])
 
 def show_chatbot():
