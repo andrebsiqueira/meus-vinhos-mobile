@@ -19,7 +19,7 @@ def show_wineries():
     st.session_state["vinho_selecionado"] = None
 
     # =========================================================
-    # 
+    # VERIFICA REGIÃO SELECIONADA
     # =========================================================
 
     regiao_selecionada = st.session_state.get(
@@ -79,8 +79,7 @@ def show_wineries():
             )
 
             st.info(
-                "Você está visualizando somente as vinícolas "
-                "desta região."
+                "Listing wineries from this region only."
             )
 
     # =========================================================
@@ -90,8 +89,8 @@ def show_wineries():
     else:
 
         pesquisa_vinicola = st.text_input(
-            "🔎 Pesquisar vinícolas",
-            placeholder="Digite o nome da vinícola ou produtor..."
+            "🔎 Search wineries",
+            placeholder="Enter winery or producer name..."
         )
 
         # =====================================================
@@ -150,14 +149,14 @@ def show_wineries():
             if len(df_filtrado_vinicola) == 0:
 
                 st.info(
-                    "Nenhuma vinícola encontrada."
+                    "No wineries found."
                 )
 
             else:
 
                 st.info(
-                    f"Encontrei {len(df_filtrado_vinicola)} "
-                    f"vinícola(s) na pesquisa."
+                    f"Found {len(df_filtrado_vinicola)} "
+                    f"winery/wineries matching your search."
                 )
 
         # =====================================================
@@ -197,7 +196,7 @@ def show_wineries():
         and len(pesquisa_atual.strip()) == 0
     ):
         st.info(
-            "Nenhuma vinícola cadastrada."
+            "No wineries registered."
         )
         return
 
@@ -264,13 +263,15 @@ def show_wineries():
             )
 
         # -----------------------------------------------------
-        # PAÍS
+        # PAÍS E REGIÃO
         # -----------------------------------------------------
 
         pais = linha["pais"]
 
+        regiao = linha["regiao"]
+
         if pd.isna(pais) or str(pais).strip() == "":
-            pais = "País não informado"
+            pais = "Country not specified"
         else:
             pais = str(pais).strip()
 
@@ -304,7 +305,7 @@ def show_wineries():
             or visitada == 1
             or str(visitada).lower() == "true"
         ):
-            indicador_visitada = " · ✓ Visitada"
+            indicador_visitada = " · ✓ Visited"
         else:
             indicador_visitada = ""
 
@@ -342,10 +343,11 @@ def show_wineries():
         st.markdown("<br>", unsafe_allow_html=True)
 
         if st.button(
-            "← Ver TODAS as Vinícolas e Produtores",
-            key="ver_todas_vinicolas",
-            width="stretch"
-        ):
+                "← View ALL Wineries & Producers",
+                key="ver_todas_vinicolas",
+                width="stretch"
+            ):
+
 
             st.session_state["regiao_selecionada"] = None
 
