@@ -9,9 +9,7 @@ from google import genai
 google_key = st.secrets["GOOGLE_API_KEY"]
 
 # Configura a API do Google
-genai.configure(api_key=google_key)
-
-#client = genai.Client(api_key=st.secrets["GOOGLE_API_KEY"])
+client = genai.Client(api_key=google_key)
 
 def show_chatbot():
 
