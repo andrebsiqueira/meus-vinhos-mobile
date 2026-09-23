@@ -393,7 +393,7 @@ def show_wineries():
             )
 
             st.info(
-                "Listing wineries from this region only."
+                "Exploring wineries from this region only."
             )
 
     # =========================================================
@@ -403,7 +403,7 @@ def show_wineries():
     else:
 
         pesquisa_vinicola = st.text_input(
-            "🔎 Search wineries",
+            "🔎 Search Wineries",
             placeholder="Enter winery or producer name..."
         )
 
