@@ -5,4 +5,5 @@ plotly
 pillow
 pillow-heif
 rapidocr-onnxruntime
+google
 google-genai
