@@ -6,10 +6,6 @@ Mobile version
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://meus-vinhos-mobile.streamlit.app/)
 
-## GitHub Codespaces
-
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/streamlit/meus-vinhos-mobile?quickstart=1)
-
 ## Section Heading
 
 This is filler text, please replace this with text for this section.
