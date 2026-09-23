@@ -3,7 +3,7 @@ import pandas as pd
 
 from banco import conectar
 
-import google.generativeai as genai
+from google import genai
 
 # Acessa a chave guardada nos segredos
 google_key = st.secrets["GOOGLE_API_KEY"]
