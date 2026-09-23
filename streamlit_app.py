@@ -7,6 +7,7 @@ from views.wineries import show_wineries
 from views.regions import show_regions
 from views.people import show_people
 from views.ocr import show_ocr
+from views.chatbot import show_chatbot
 from views.settings import show_settings
 
 with st.sidebar:
@@ -20,6 +21,7 @@ with st.sidebar:
             "Regions",
             "People",
             "OCR",
+            "AI Chatbot",
             "Settings"
         ],
         icons=[
@@ -29,6 +31,7 @@ with st.sidebar:
             "globe",
             "people",
             "search",
+            "robot",
             "gear"
         ],
         menu_icon="wine",
@@ -54,6 +57,9 @@ elif selected == "People":
 
 elif selected == "OCR":
     show_ocr()
+
+elif selected == "AI Chatbot":
+    show_chatbot()
 
 elif selected == "Settings":
     show_settings()
