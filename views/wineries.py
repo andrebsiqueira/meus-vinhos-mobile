@@ -12,6 +12,25 @@ def show_wineries():
 
     st.markdown("<br>", unsafe_allow_html=True)
 
+    st.markdown(
+        """
+        <style>
+        /* Botões das vinícolas */
+        div[data-testid="stButton"] button {
+            text-align: center !important;
+            justify-content: flex-start !important;
+        }
+
+        div[data-testid="stButton"] button p {
+            text-align: center !important;
+            width: 100%;
+            font-size: 16px !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
     # =========================================================
     # LIMPAR VINHO SELECIONADO
     # =========================================================
