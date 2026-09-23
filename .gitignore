@@ -1,3 +1,0 @@
-# Ignore local secret configuration files
-.streamlit/secrets.toml
-secrets.toml
