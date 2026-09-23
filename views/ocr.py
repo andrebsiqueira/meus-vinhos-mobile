@@ -1,11 +1,16 @@
 import streamlit as st
-import pandas as pd
-
-from banco import conectar
+from google import genai
 
 def show_ocr():
 
     st.markdown(
-        '<div class="secao" style="font-size: 28px;">🍷 OCR</div>',
+        "<div class='secao'>🤖 AI Assistant</div>",
         unsafe_allow_html=True
     )
+
+    try:
+        client = genai.Client()
+
+    except Exception as e:
+        st.error(f"Unable to connect to Gemini: {e}")
+        return
