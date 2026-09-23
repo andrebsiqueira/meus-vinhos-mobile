@@ -5,8 +5,8 @@ from views.home import show_home
 from views.my_wines import show_my_wines
 from views.wineries import show_wineries
 from views.regions import show_regions
-from views.ocr import show_ocr
 from views.people import show_people
+from views.ocr import show_ocr
 from views.settings import show_settings
 
 with st.sidebar:
@@ -18,8 +18,8 @@ with st.sidebar:
             "My Wines",
             "Wineries",
             "Regions",
-            "OCR",
             "People",
+            "OCR",
             "Settings"
         ],
         icons=[
@@ -27,8 +27,8 @@ with st.sidebar:
             "journal-richtext",
             "building",
             "globe",
-            "search",
             "people",
+            "search",
             "gear"
         ],
         menu_icon="wine",
@@ -49,12 +49,11 @@ elif selected == "Wineries":
 elif selected == "Regions":
     show_regions()
 
-elif selected == "OCR":
-    show_ocr()
-
 elif selected == "People":
     show_people()
 
+elif selected == "OCR":
+    show_ocr()
+
 elif selected == "Settings":
     show_settings()
-    
