@@ -12,7 +12,7 @@ from views.settings import show_settings
 with st.sidebar:
 
     selected = option_menu(
-        "Main Menu",
+        "App Main Menu",
         [
             "Home",
             "My Wines",
