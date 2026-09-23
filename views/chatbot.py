@@ -22,7 +22,7 @@ def show_chatbot():
     
         try:
             resposta = client.models.generate_content(
-                model="gemini-3.4-flash",
+                model="gemini-3.5-flash",
                 contents="Responda apenas: Gemini funcionando!"
             )
             st.success("Gemini connection successful!")
