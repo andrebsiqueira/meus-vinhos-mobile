@@ -13,7 +13,7 @@ def show_home():
     )
 
     st.info(
-            "A personal catalog to record, organize, and rediscover your wines."
+            "A personal catalog to record, organize and rediscover your wines."
         )
 
     conexao = conectar()
@@ -244,7 +244,7 @@ def show_home():
                     "x": {
                         "field": "Quantidade",
                         "type": "quantitative",
-                        "title": "Quantidade"
+                        "title": "Number of Wine Bottles"
                     }
                 },
                 "height": 330

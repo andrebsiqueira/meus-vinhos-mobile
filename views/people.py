@@ -9,3 +9,7 @@ def show_people():
         '<div class="secao" style="font-size: 28px;">🍷 People</div>',
         unsafe_allow_html=True
     )
+
+    st.info(
+            "Who is always there when it’s time to open a bottle? 😄"
+        )
