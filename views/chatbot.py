@@ -18,20 +18,4 @@ def show_chatbot():
     # google_key = st.secrets["GOOGLE_API_KEY"]
     google_key = os.getenv("GOOGLE_API_KEY")
     
-    # Configura a API do Google
-    client = genai.Client(api_key=google_key)
-    
-    if st.button("Test Gemini", width="stretch"):
-    
-        try:
-            resposta = client.models.generate_content(
-                model="gemini-3.5-flash",
-                contents="Responda apenas: Gemini funcionando!"
-            )
-            st.success("Gemini connection successful!")
-            st.write(resposta.text)
-    
-        except Exception as e:
-            st.error("Gemini connection failed.")
-            st.exception(e)
-
+    st.write(google_key)
