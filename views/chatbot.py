@@ -12,7 +12,7 @@ google_key = st.secrets["GOOGLE_API_KEY"]
 client = genai.Client(api_key=google_key)
 
 resposta = client.models.generate_content(
-    model="gemini-3.3-flash",
+    model="gemini-3.1-flash-lite",
     contents="Qual é a principal uva utilizada no vinho Malbec argentino?"
 )
 
