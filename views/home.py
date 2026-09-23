@@ -73,6 +73,14 @@ def show_home():
             else 0
     )
 
+    regions = (
+            df_vinicolas["regiao"]
+            .dropna()
+            .nunique()
+            if len(df_vinicolas) > 0
+            else 0
+    )
+
     st.markdown(
         f"""
         <div style="
@@ -140,14 +148,14 @@ def show_home():
                         border-radius: 8px;
                     ">
                         <div style="font-size: 14px;">
-                            🍷 Regions
+                            📍 Regions
                         </div>
                         <div style="
                             font-size: 24px;
                             font-weight: 600;
                             margin-top: 4px;
                         ">
-                            {len(df_vinhos)}
+                            {regions}
                         </div>
                     </div>
                     <div style="
@@ -172,3 +180,74 @@ def show_home():
         """,
         unsafe_allow_html=True
     )
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # ==========================================================
+    # CHART 1 - TOP 10 GRAPE VARIETIES
+    # ==========================================================
+
+    # Título do gráfico
+    st.markdown(
+        '<div class="secao" style="font-size: 22px; text-align: left;">Chart 1: Top 10 Grape Varieties</div>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # Remove valores vazios
+    df_uvas = df_vinhos["uva"].dropna()
+
+    # Separa as uvas pela vírgula
+    uvas = (
+            df_uvas
+            .str.split(",")
+            .explode()
+            .str.strip()
+        )
+
+    # Remove percentuais e qualquer conteúdo entre parênteses
+    uvas = (
+            uvas
+            .str.replace(r"\s*\([^)]*\)", "", regex=True)
+            .str.strip()
+        )
+
+    # Remove valores vazios
+    uvas = uvas[uvas != ""]
+
+    # Conta cada variedade individualmente
+    qtd_por_uva = (
+            uvas
+            .value_counts()
+            .head(10)
+            .reset_index()
+        )
+
+    qtd_por_uva.columns = ["Uva", "Quantidade"]
+
+    # Gráfico horizontal
+    st.vega_lite_chart(
+            qtd_por_uva,
+            {
+                "mark": {
+                "type": "bar",
+                "color": "#722F37"
+            },
+                "encoding": {
+                    "y": {
+                        "field": "Uva",
+                        "type": "nominal",
+                        "sort": "-x",
+                        "title": None
+                    },
+                    "x": {
+                        "field": "Quantidade",
+                        "type": "quantitative",
+                        "title": "Quantidade"
+                    }
+                },
+                "height": 330
+            },
+            width="stretch"
+        )
