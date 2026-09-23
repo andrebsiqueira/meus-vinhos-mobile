@@ -3,6 +3,295 @@ import pandas as pd
 
 from banco import conectar
 
+def mostrar_detalhes_vinicola(vinicola_id):
+
+    st.markdown(
+        """
+        <style>
+        /* Botões das vinícolas */
+        div[data-testid="stButton"] button {
+            text-align: center !important;
+            justify-content: flex-start !important;
+        }
+
+        div[data-testid="stButton"] button p {
+            text-align: center !important;
+            width: 100%;
+            font-size: 18px !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+    conexao = conectar()
+
+    df = pd.read_sql_query(
+        """
+        SELECT
+            v.id,
+            v.nome,
+            v.pais,
+            v.regiao,
+            v.subregiao,
+            v.cidade,
+            v.site,
+            v.instagram,
+            v.visitada,
+            v.descricao,
+            COUNT(DISTINCT vi.id) AS quantidade_vinhos
+        FROM vinicolas v
+        LEFT JOIN vinhos vi
+            ON v.id = vi.vinicola_id
+        WHERE v.id = ?
+        GROUP BY
+            v.id,
+            v.nome,
+            v.pais,
+            v.regiao,
+            v.subregiao,
+            v.cidade,
+            v.site,
+            v.instagram,
+            v.visitada,
+            v.descricao
+        """,
+        conexao,
+        params=(vinicola_id,)
+    )
+
+    df_vinhos = pd.read_sql_query(
+        """
+        SELECT
+            id,
+            nome,
+            uva,
+            safra,
+            tipo,
+            data_vinho,
+            ano_vinho
+        FROM vinhos
+        WHERE vinicola_id = ?
+        """,
+        conexao,
+        params=(vinicola_id,)
+    )
+
+    conexao.close()
+
+    if df.empty:
+        st.session_state["vinicola_selecionada"] = None
+        st.rerun()
+
+    vinicola = df.iloc[0]
+
+    st.markdown(
+        f"""
+        <div class="secao" style="font-size: 28px;">
+            🏛️ {vinicola["nome"]}
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # PAÍS / REGIÃO
+    pais = vinicola["pais"]
+
+    if pd.isna(pais) or str(pais).strip() == "":
+        pais = "Country not specified"
+
+    regiao = vinicola["regiao"]
+
+    if pd.isna(regiao) or str(regiao).strip() == "":
+        regiao = ""
+
+    subregiao = vinicola["subregiao"]
+
+    if pd.isna(subregiao) or str(subregiao).strip() == "":
+        subregiao = ""
+
+    cidade = vinicola["cidade"]
+
+    if pd.isna(cidade) or str(cidade).strip() == "":
+        cidade = ""
+
+    st.markdown(
+        f"""
+        <div style="
+            text-align: left;
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        ">
+            🌎 <b>{pais}</b><br>
+            📍 {regiao}
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # DESCRIÇÃO
+    descricao = vinicola["descricao"]
+
+    if (
+        not pd.isna(descricao)
+        and str(descricao).strip() != ""
+    ):
+        st.markdown("### About")
+        st.markdown(str(descricao))
+
+    # SITE
+    site = vinicola["site"]
+
+    if (
+        not pd.isna(site)
+        and str(site).strip() != ""
+    ):
+        st.markdown("### Website")
+        st.markdown(f"[{site}]({site})")
+
+    # INSTAGRAM
+    instagram = vinicola["instagram"]
+
+    if (
+        not pd.isna(instagram)
+        and str(instagram).strip() != ""
+    ):
+        st.markdown("### Instagram")
+        st.markdown(str(instagram))
+
+    st.markdown(f'### My Experience with {vinicola["nome"]}')
+
+    # QUANTIDADE DE VINHOS
+    quantidade = int(vinicola["quantidade_vinhos"] or 0)
+
+    texto_vinhos = (
+        "1 wine"
+        if quantidade == 1
+        else f"{quantidade} wines"
+    )
+
+    # VISITADA
+    texto_visitada = vinicola["visitada"]
+
+    if (
+        texto_visitada is True
+        or texto_visitada == 1
+        or str(texto_visitada).lower() == "true"
+    ):
+        texto_visitada = "✓ <b>Visited</b>"
+    else:
+         texto_visitada = "-"       
+
+    st.markdown(
+        f"""
+        <div style="
+                    display: flex;
+                    width: 100%;
+                    gap: 10px;
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+                ">
+                    <div style="
+                        flex: 1;
+                        text-align: center;
+                        padding: 10px 5px;
+                        border: 1px solid rgba(128,128,128,0.25);
+                        border-radius: 8px;
+                    ">
+                        <div style="
+                            font-size: 24px;
+                            font-weight: 600;
+                            margin-top: 4px;
+                        ">
+                            🍷 {texto_vinhos}
+                        </div>
+                    </div>
+                    <div style="
+                        flex: 1;
+                        text-align: center;
+                        padding: 10px 5px;
+                        border: 1px solid rgba(128,128,128,0.25);
+                        border-radius: 8px;
+                    ">
+                        <div style="
+                            font-size: 24px;
+                            font-weight: 600;
+                            margin-top: 4px;
+                        ">
+                            {texto_visitada}
+                        </div>
+                    </div>
+                </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    if df_vinhos.empty:
+
+        st.info("No wines from this winery are in your collection yet.")
+
+    else:
+
+        # Ordenação por safra e depois por nome
+        df_vinhos["safra_ordem"] = pd.to_numeric(
+            df_vinhos["safra"],
+            errors="coerce"
+        )
+
+        df_vinhos = df_vinhos.sort_values(
+            by=["safra_ordem", "nome"],
+            ascending=[False, True],
+            na_position="last"
+        )
+
+        for _, vinho in df_vinhos.iterrows():
+
+            nome_vinho = str(vinho["nome"])
+
+            safra = vinho["safra"]
+
+            if pd.isna(safra) or str(safra).strip() == "":
+                texto_safra = ""
+            else:
+                texto_safra = f" · {safra}"
+
+            uva = vinho["uva"]
+
+            if pd.isna(uva) or str(uva).strip() == "":
+                texto_uva = ""
+            else:
+                texto_uva = f" · {uva}"
+
+            st.markdown(
+                f"""
+                <div style="
+                    padding: 10px 0;
+                    border-bottom: 1px solid #dddddd;
+                    text-align: left;
+                ">
+                    <div style="
+                        font-size: 17px;
+                        font-weight: 600;
+                    ">
+                        🍷 {nome_vinho} {texto_safra}
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # VOLTAR
+    if st.button(
+        "← Back to Wineries",
+        width="stretch"
+    ):
+        st.session_state["vinicola_selecionada"] = None
+        st.rerun()
+
+
 def show_wineries():
 
     st.markdown(
@@ -11,6 +300,12 @@ def show_wineries():
     )
 
     st.markdown("<br>", unsafe_allow_html=True)
+
+    vinicola_selecionada = st.session_state.get("vinicola_selecionada")
+
+    if vinicola_selecionada:
+        mostrar_detalhes_vinicola(vinicola_selecionada)
+        return
 
     st.markdown(
         """

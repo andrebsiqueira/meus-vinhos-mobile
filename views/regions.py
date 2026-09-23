@@ -9,6 +9,8 @@ from funcoes import (
 
 def show_regions():
 
+    st.session_state["vinicola_selecionada"] = None
+
     st.markdown(
         '<div class="secao" style="font-size: 28px;">🌎 Regions</div>',
         unsafe_allow_html=True
