@@ -308,9 +308,9 @@ def show_wineries():
         )
 
         texto_vinhos = (
-            "1 vinho"
+            "1 wine"
             if quantidade_vinhos == 1
-            else f"{quantidade_vinhos} vinhos"
+            else f"{quantidade_vinhos} wines"
         )
 
         # -----------------------------------------------------
