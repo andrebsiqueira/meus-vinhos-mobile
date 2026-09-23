@@ -24,7 +24,7 @@ def show_wineries():
         div[data-testid="stButton"] button p {
             text-align: center !important;
             width: 100%;
-            font-size: 16px !important;
+            font-size: 18px !important;
         }
         </style>
         """,
