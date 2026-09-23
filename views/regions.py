@@ -14,6 +14,10 @@ def show_regions():
         unsafe_allow_html=True
     )
 
+    st.info(
+            "Explore your wine collection by wine-producing regions."
+        )
+
     conexao = conectar()
 
     df_paises = pd.read_sql_query(
@@ -49,10 +53,6 @@ def show_regions():
         )
 
         filtro_pais_regiao.append(texto)
-
-    st.info(
-            "Explore your wine collection by wine-producing regions."
-        )
 
     col1, col2 = st.columns([2, 1])
 

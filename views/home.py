@@ -224,7 +224,7 @@ def show_home():
             .reset_index()
         )
 
-    qtd_por_uva.columns = ["Uva", "Quantidade"]
+    qtd_por_uva.columns = ["Grape", "Quantidade"]
 
     # Gráfico horizontal
     st.vega_lite_chart(
@@ -236,7 +236,7 @@ def show_home():
             },
                 "encoding": {
                     "y": {
-                        "field": "Uva",
+                        "field": "Grape",
                         "type": "nominal",
                         "sort": "-x",
                         "title": None
@@ -244,10 +244,56 @@ def show_home():
                     "x": {
                         "field": "Quantidade",
                         "type": "quantitative",
-                        "title": "Number of Wine Bottles"
+                        "title": "Number of Bottles"
                     }
                 },
                 "height": 330
             },
             width="stretch"
         )
+
+    # ==========================================================
+    # CHART 2 - WINES BY PRODUCING COUNTRY
+    # ==========================================================
+
+    st.markdown(
+        '<div class="secao" style="font-size: 22px; text-align: left;">Chart 2: Wine by Producing Country</div>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    qtd_por_pais = (
+        df_vinhos["pais"]
+        .fillna("Não informado")
+        .value_counts()
+        .sort_values(ascending=False)
+        .reset_index()
+    )
+
+    qtd_por_pais.columns = ["Country", "Quantidade"]
+
+    st.vega_lite_chart(
+        qtd_por_pais,
+        {
+            "mark": {
+            "type": "bar",
+            "color": "#722F37"
+        },
+            "encoding": {
+                "y": {
+                    "field": "Country",
+                    "type": "nominal",
+                    "sort": "-x",
+                    "title": None
+                },
+                "x": {
+                    "field": "Quantidade",
+                    "type": "quantitative",
+                    "title": "Number of Bottles"
+                }
+            },
+            "height": 300
+        },
+        #use_container_width=True
+    )
