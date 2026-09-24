@@ -17,6 +17,6 @@ def show_ocr():
     except Exception as e: 
         st.error(f"Error reading API Key: {e}") st.stop()
 
-    st.write(google_key)
+    st.write(st.secrets["G_KEY1"])
 
     
