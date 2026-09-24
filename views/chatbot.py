@@ -8,6 +8,8 @@ def show_chatbot():
         unsafe_allow_html=True
     )
 
+    st.markdown("<br>", unsafe_allow_html=True)
+    
     # ============================================================
     # API KEY
     # ============================================================
@@ -29,9 +31,7 @@ def show_chatbot():
         st.write(
             "Enter your Google Gemini API Key to start the AI Chatbot."
         )
-
-        st.markdown("<br>", unsafe_allow_html=True)
-        
+       
         with st.form("api_key_form"):
 
             api_key = st.text_input(
