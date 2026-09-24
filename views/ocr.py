@@ -7,6 +7,8 @@ from banco import conectar
 
 def show_ocr():
 
-    st.write(st.secrets["G_KEY1"])
+    google_key = st.secrets["G_KEY1"] + st.secrets["G_KEY3"] + st.secrets["G_KEY2"]
+
+    st.write(google_key)
 
     
