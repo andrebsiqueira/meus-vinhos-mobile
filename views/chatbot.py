@@ -20,58 +20,29 @@ def show_chatbot():
     if "gemini_connected" not in st.session_state:
         st.session_state.gemini_connected = False
 
-    # ============================================================
-    # FORMULÁRIO DA API KEY
-    # ============================================================
-
-    if not st.session_state.gemini_connected:
-
-        st.markdown("### 🔑 Connect to Gemini")
-
-        st.write(
-            "Enter your Google Gemini API Key to start the AI Chatbot."
-        )
-       
-        with st.form("api_key_form"):
-
-            api_key = st.text_input(
-                "Google Gemini API Key",
-                type="password",
-                placeholder="Enter your API Key..."
-            )
-
-            conectar = st.form_submit_button(
-                "🔗 Connect to Gemini",
-                width="stretch"
-            )
-
-            if conectar:
-
-                if not api_key.strip():
-
-                    st.error("Please enter your API Key.")
-
-                else:
-
-                    try:
-
-                        client = genai.Client(
-                            api_key=api_key.strip()
-                        )
-
-                        # Guarda a chave somente na sessão atual
-                        st.session_state.google_api_key = api_key.strip()
-
-                        st.session_state.gemini_connected = True
-
-                        st.rerun()
-
-                    except Exception as e:
-
-                        st.error(
-                            f"Unable to connect to Gemini: {e}"
-                        )
-
+    # ============================================================ 
+    # CONEXÃO COM GEMINI 
+    # ============================================================ 
+    
+    try: 
+        # Junta as 3 partes da API Key 
+        google_key = ( st.secrets["G_KEY1"] + st.secrets["G_KEY2"] + st.secrets["G_KEY3"] ) 
+    except Exception as e: 
+        st.error(f"Unable to load Gemini API Key: {e}") 
+        return 
+        
+    # ============================================================ 
+    # CRIA CLIENTE GEMINI 
+    # ============================================================ 
+    
+    try: 
+        client = genai.Client( api_key=google_key ) 
+        st.session_state.google_api_key = google_key 
+        st.session_state.gemini_connected = True 
+    except Exception as e: 
+        st.error( f"Unable to connect to Gemini: {e}" ) 
+        st.session_state.gemini_connected = False 
+        
         return
 
     # ============================================================
