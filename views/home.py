@@ -335,6 +335,11 @@ def show_home():
     for i, (_, vinho) in enumerate(top_10_vivino.iterrows(), start=1):
 
         nome = vinho["nome"] or "Unknown Wine"
+        safra = vinho["safra"]
+        
+        if safra:
+            nome = f"{nome} · {safra}"
+        
         vinicola = vinho["vinicola"] or "Unknown Winery"
         nota = vinho["nota_vivino"]
 
