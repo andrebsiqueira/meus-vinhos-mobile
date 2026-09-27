@@ -134,7 +134,7 @@ def show_my_wines():
             safra = " "
 
         st.markdown(
-            f"### {nome} {safra}"
+            f"### {nome} · {safra}"
         )
 
         st.info(
