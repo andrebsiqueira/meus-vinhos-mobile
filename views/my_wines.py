@@ -903,7 +903,6 @@ def show_my_wines():
                     else:
                         foto_arquivo = str(foto_arquivo)
 
-
                     imagem_garrafa_path = localizar_imagem_garrafa(imagem_garrafa)
 
                     imagem_b64, mime_type = imagem_base64(imagem_garrafa_path)
@@ -941,6 +940,12 @@ def show_my_wines():
                         """
 
                     st.markdown(f"""
+                    <div style="
+                                padding: 10px 5px;
+                                border-bottom: 1px solid rgba(128,128,128,0.20);
+                                margin-bottom: 15px;
+                            ">
+                    </div>
                     <div class="card">
                         <!-- NOME DO VINHO -->
                         <div class="card-texto-bold">{nome}</div>
