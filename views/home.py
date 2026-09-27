@@ -297,3 +297,72 @@ def show_home():
         },
         #use_container_width=True
     )
+
+    # ==========================================================
+    # CHART 3 - TOP 10 WINES BY VIVINO APP RATING
+    # ==========================================================
+
+    st.markdown(
+        '<div class="secao" style="font-size: 22px; text-align: left;">Chart 3: Top 10 Wines by Vivino APP Rating</div>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # Convert Vivino rating to numeric
+    df_vivino = df_vinhos.copy()
+
+    df_vivino["nota_vivino"] = pd.to_numeric(
+        df_vivino["nota_vivino"],
+        errors="coerce"
+    )
+
+    # Remove wines without a Vivino rating
+    df_vivino = df_vivino.dropna(subset=["nota_vivino"])
+
+    # Create wine label
+    df_vivino["Wine"] = (
+        df_vivino["nome"].fillna("Unknown Wine")
+        + " - "
+        + df_vivino["vinicola"].fillna("Unknown Winery")
+    )
+
+    # Select Top 10 wines
+    top_10_vivino = (
+        df_vivino
+        .sort_values("nota_vivino", ascending=False)
+        .head(10)
+        [["Wine", "nota_vivino"]]
+        .reset_index(drop=True)
+    )
+
+    top_10_vivino.columns = ["Wine", "Vivino Rating"]
+
+    # Horizontal chart
+    st.vega_lite_chart(
+        top_10_vivino,
+        {
+            "mark": {
+                "type": "bar",
+                "color": "#722F37"
+            },
+            "encoding": {
+                "y": {
+                    "field": "Wine",
+                    "type": "nominal",
+                    "sort": "-x",
+                    "title": None
+                },
+                "x": {
+                    "field": "Vivino Rating",
+                    "type": "quantitative",
+                    "scale": {
+                        "domain": [0, 5]
+                    },
+                    "title": "Vivino Rating"
+                }
+            },
+            "height": 350
+        },
+        width="stretch"
+    )
