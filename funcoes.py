@@ -15,19 +15,19 @@ register_heif_opener()
 PASTA_PROJETO = Path(__file__).resolve().parent
 
 PASTA_IMAGENS_FOTOS = (
-    PASTA_PROJETO / "Fotos"
+    PASTA_PROJETO / "wine_photos"
 )
 
 PASTA_IMAGENS_PESSOAS = (
-    PASTA_PROJETO / "pessoas"
+    PASTA_PROJETO / "people"
 )
 
 PASTA_IMAGENS_GARRAFAS = (
-    PASTA_PROJETO / "imagens_garrafas"
+    PASTA_PROJETO / "bottle_images"
 )
 
 PASTA_IMAGENS_REGIOES = (
-    PASTA_PROJETO / "imagens_regioes"
+    PASTA_PROJETO / "region_images"
 )
 
 # ============================================================
