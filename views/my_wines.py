@@ -455,6 +455,12 @@ def show_my_wines():
                         """
 
                     st.markdown(f"""
+                    <div style="
+                                padding: 10px 5px;
+                                border-bottom: 1px solid rgba(128,128,128,0.20);
+                                margin-bottom: 15px;
+                    ">
+                    </div>
                     <div class="card">
                         <!-- NOME DO VINHO -->
                         <div class="card-texto-bold">{nome}</div>
@@ -696,6 +702,12 @@ def show_my_wines():
                         """
 
                     st.markdown(f"""
+                    <div style="
+                                padding: 10px 5px;
+                                border-bottom: 1px solid rgba(128,128,128,0.20);
+                                margin-bottom: 15px;
+                    ">
+                    </div>
                     <div class="card">
                         <!-- NOME DO VINHO -->
                         <div class="card-texto-bold">{nome}</div>
