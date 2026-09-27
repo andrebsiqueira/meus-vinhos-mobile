@@ -144,7 +144,6 @@ def show_settings():
                         ">
                             {foto["nome"] or "Unknown Wine"}
                         </div>
-
                         <div style="
                             font-size: 13px;
                             opacity: 0.70;
@@ -152,7 +151,6 @@ def show_settings():
                         ">
                             {foto["arquivo"]}
                         </div>
-
                         <div style="
                             font-size: 12px;
                             opacity: 0.55;
