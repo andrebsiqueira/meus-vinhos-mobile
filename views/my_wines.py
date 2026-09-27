@@ -19,6 +19,8 @@ def show_my_wines():
         unsafe_allow_html=True
     )
 
+    st.markdown("<br>", unsafe_allow_html=True)
+
     pesquisa = ""
 
     regiao_selecionada = st.session_state.get(
@@ -68,19 +70,19 @@ def show_my_wines():
         #Adicionar a opção TODOS no início
         filtro_ano_vinho = ["TODOS"] + anos_disponiveis
 
-        col_pesquisa, col_ano = st.columns([3, 1])
+        #col_pesquisa, col_ano = st.columns([3, 1])
 
-        with col_pesquisa:
+        #with col_pesquisa:
 
-            pesquisa = st.text_input(
+        pesquisa = st.text_input(
                 "🔎 Search ALL Wines",
                 placeholder="Enter wine name, winery, grape..."
             )
 
 
-        with col_ano:
+        #with col_ano:
 
-            ano_selecionado = st.selectbox(
+        ano_selecionado = st.selectbox(
                 "📅 Tasting Year",
                 options=filtro_ano_vinho,
                 index=(
@@ -141,67 +143,62 @@ def show_my_wines():
 
         conexao.close()
 
-        col_card, col_foto, col_vazio = st.columns(3)
+        vinho = df_vinho_filtrado.iloc[0]
 
-        with col_card:
+        vinho_id = vinho["id"]
+        nome = vinho["nome"]
+        tipo = vinho["tipo"]
+        uva = vinho["uva"]
+        vinicola = vinho["vinicola"]
+        regiao = vinho["regiao"]
+        pais = vinho["pais"]
+        nota_vivino = vinho["nota_vivino"]
+        observacoes = vinho["observacoes"]
+        data_vinho = vinho["data_vinho"]
+        pessoas = vinho["pessoas"]
+        foto_arquivo = vinho["foto_arquivo"]
+        imagem_garrafa = vinho["imagem_garrafa"]
 
-            #colunas = st.columns(1)
-            vinho = df_vinho_filtrado.iloc[0]
-
-            vinho_id = vinho["id"]
-            nome = vinho["nome"]
-            tipo = vinho["tipo"]
-            uva = vinho["uva"]
-            vinicola = vinho["vinicola"]
-            regiao = vinho["regiao"]
-            pais = vinho["pais"]
-            nota_vivino = vinho["nota_vivino"]
-            observacoes = vinho["observacoes"]
-            data_vinho = vinho["data_vinho"]
-            pessoas = vinho["pessoas"]
-            foto_arquivo = vinho["foto_arquivo"]
-            imagem_garrafa = vinho["imagem_garrafa"]
-
-            if data_vinho:
+        if data_vinho:
                 data_vinho = datetime.strptime(str(data_vinho), "%Y:%m:%d %H:%M:%S").strftime("%d-%m-%Y")
-            else:
+        else:
                 data_vinho = "."
 
-            if uva is None or str(uva).lower() == "nan" or str(uva).strip() == "":
+        if uva is None or str(uva).lower() == "nan" or str(uva).strip() == "":
                 uva = "Não informada ou não registrada"
-            else:
+        else:
                 uva = html.escape(str(uva))
 
-            if pd.notna(vinho["safra"]):
+        if pd.notna(vinho["safra"]):
                 safra = vinho["safra"]
-            else:
+        else:
                 safra = "não informada"
 
-            if nota_vivino is None or str(nota_vivino).lower() == "nan" or str(nota_vivino).strip() == "":
+        if nota_vivino is None or str(nota_vivino).lower() == "nan" or str(nota_vivino).strip() == "":
                 nota = "⭐ Não disponível"
-            else:                    
+        else:                    
                 nota = f"⭐ App Vivino: {vinho['nota_vivino']}"
 
-            if observacoes is None or str(observacoes).lower() == "nan" or str(observacoes).strip() == "":
+        if observacoes is None or str(observacoes).lower() == "nan" or str(observacoes).strip() == "":
                 observacoes = "."
-            else:
+        else:
                 observacoes = html.escape(str(observacoes))
 
-            if pessoas is None or str(pessoas).lower() == "nan" or str(pessoas).strip() == "":
+        if pessoas is None or str(pessoas).lower() == "nan" or str(pessoas).strip() == "":
                 pessoas = "."
-            else:
+        else:
                 pessoas = html.escape(str(pessoas))
 
-            if foto_arquivo is None or str(foto_arquivo).lower() == "nan" or str(foto_arquivo).strip() == "":
+        if foto_arquivo is None or str(foto_arquivo).lower() == "nan" or str(foto_arquivo).strip() == "":
                 foto_arquivo = "-"
-            else:
+        else:
                 foto_arquivo = str(foto_arquivo)
 
-            imagem_garrafa_path = localizar_imagem_garrafa(imagem_garrafa)
+        imagem_garrafa_path = localizar_imagem_garrafa(imagem_garrafa)
 
-            imagem_b64, mime_type = imagem_base64(imagem_garrafa_path)
+        imagem_b64, mime_type = imagem_base64(imagem_garrafa_path)
 
-            if imagem_b64:
+        if imagem_b64:
 
                             if not mime_type:
                                 mime_type = "image/png"
@@ -219,7 +216,7 @@ def show_my_wines():
                                 >
                             """
 
-            else:
+        else:
 
                             imagem_html = """
                                 <div style="
@@ -233,7 +230,7 @@ def show_my_wines():
                                 </div>
                             """
 
-            st.markdown(f"""
+        st.markdown(f"""
                         <div class="card">
                             <!-- NOME DO VINHO -->
                             <div class="card-texto-bold">{nome}</div>
@@ -303,12 +300,9 @@ def show_my_wines():
                         </div>
                         """, unsafe_allow_html=True)
 
+        caminho_foto = localizar_imagem_foto(foto_arquivo)
 
-        with col_foto:
-
-            caminho_foto = localizar_imagem_foto(foto_arquivo)
-
-            if caminho_foto:
+        if caminho_foto:
                     st.image(
                         str(caminho_foto),
                         width="stretch"
@@ -365,7 +359,7 @@ def show_my_wines():
         )
 
         st.info(
-            f"Você está visualizando somente os vinhos desta região. "
+            f"You are viewing only the wines from this region."
         )
 
         conexao.close()
