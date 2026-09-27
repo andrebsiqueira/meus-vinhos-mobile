@@ -257,7 +257,7 @@ def show_home():
     # ==========================================================
 
     st.markdown(
-        '<div class="secao" style="font-size: 22px; text-align: left;">Chart 2: Wine by Producing Country</div>',
+        '<div class="secao" style="font-size: 22px; text-align: left;">Chart 2: Wines by Producing Country</div>',
         unsafe_allow_html=True
     )
 
