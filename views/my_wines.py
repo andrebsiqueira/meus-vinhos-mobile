@@ -68,7 +68,7 @@ def show_my_wines():
         )
 
         #Adicionar a opção TODOS no início
-        filtro_ano_vinho = ["TODOS"] + anos_disponiveis
+        filtro_ano_vinho = ["ALL"] + anos_disponiveis
 
         #col_pesquisa, col_ano = st.columns([3, 1])
 
@@ -138,7 +138,7 @@ def show_my_wines():
         )
 
         st.info(
-            f"Você está visualizando somente os dados deste vinho. "
+            f"You are viewing only the details of this wine."
         )
 
         conexao.close()
@@ -281,7 +281,7 @@ def show_my_wines():
                                 </div>
                             </div>
                                 <div class="card-texto-obs">
-                                Minhas anotações:
+                                My Notes:
                                 </div>
                                 <div class="card-texto-obs">
                                 {data_vinho} - {observacoes}
@@ -308,7 +308,7 @@ def show_my_wines():
                         width="stretch"
                     )
 
-        if st.button("← Ver TODOS os vinhos cadastrados", key="ver_todos_vinhos"):
+        if st.button("← View ALL wines in the collection", key="ver_todos_vinhos"):
             st.session_state["regiao_selecionada"] = None
             st.session_state["vinho_selecionado"] = None
             st.rerun()
@@ -505,7 +505,7 @@ def show_my_wines():
                             </div>
                         </div>
                             <div class="card-texto-obs">
-                            Minhas anotações:
+                            My Notes:
                             </div>
                             <div class="card-texto-obs">
                             {data_vinho} - {observacoes}
@@ -528,7 +528,7 @@ def show_my_wines():
                     if foto_arquivo != "-":
 
                         if st.button(
-                            "Exibir foto do vinho",
+                            "View wine photo",
                             key=f"vinho_{vinho_id}",
                             width="stretch"
                         ):
@@ -546,7 +546,7 @@ def show_my_wines():
                         )
 
 
-        if st.button("← Ver TODOS os vinhos cadastrados", key="ver_todos_vinhos"):
+        if st.button("← View ALL wines in the collection", key="ver_todos_vinhos"):
             st.session_state["regiao_selecionada"] = None
             st.session_state["vinho_selecionado"] = None
             st.session_state["pesquisa_vinhos"] = ""
@@ -600,10 +600,10 @@ def show_my_wines():
         ]
 
         if len(df_pesquisa) == 0:
-            st.info("Nenhum vinho encontrado.")
+            st.info("No wines found.")
                 
         else:
-            st.info(f"Encontrei {len(df_pesquisa)} vinho(s) na pesquisa.")
+            st.info(f"{len(df_pesquisa)} wine(s) found.")
 
         conexao.close()
 
@@ -746,7 +746,7 @@ def show_my_wines():
                             </div>
                         </div>
                             <div class="card-texto-obs">
-                            Minhas anotações:
+                            My Notes:
                             </div>
                             <div class="card-texto-obs">
                             {data_vinho} - {observacoes}
@@ -793,7 +793,7 @@ def show_my_wines():
                     color: #666;
                     font-size: 16px;
                 ">
-                    🍷 <b>{len(df_pesquisa)}</b> vinho(s) encontrado(s)
+                    🍷 <b>{len(df_pesquisa)}</b> wine(s) found.
                 </div>
                 """,
                 unsafe_allow_html=True
@@ -834,7 +834,7 @@ def show_my_wines():
 
         parametros = []
 
-        if ano_selecionado != "TODOS":
+        if ano_selecionado != "ALL":
             sql += """
                 WHERE v.ano_vinho = ?
             """
@@ -991,7 +991,7 @@ def show_my_wines():
                             </div>
                         </div>
                             <div class="card-texto-obs">
-                            Minhas anotações:
+                            My Notes:
                             </div>
                             <div class="card-texto-obs">
                             {data_vinho} - {observacoes}
@@ -1013,7 +1013,7 @@ def show_my_wines():
                     if foto_arquivo != "-":
 
                         if st.button(
-                            "Exibir foto do vinho",
+                            "View wine photo",
                             key=f"vinho_{vinho_id}",
                             width="stretch"
                         ):
@@ -1038,7 +1038,7 @@ def show_my_wines():
                     color: #666;
                     font-size: 16px;
                 ">
-                    🍷 <b>{len(df_vinhos)}</b> vinho(s) encontrado(s)
+                    🍷 <b>{len(df_vinhos)}</b> wine(s) found.
                 </div>
                 """,
                 unsafe_allow_html=True

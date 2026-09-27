@@ -288,7 +288,7 @@ def show_wineries():
         unsafe_allow_html=True
     )
 
-    st.markdown("<br>", unsafe_allow_html=True)
+    #st.markdown("<br>", unsafe_allow_html=True)
 
     vinicola_selecionada = st.session_state.get("vinicola_selecionada")
 
