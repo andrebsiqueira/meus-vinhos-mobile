@@ -552,3 +552,497 @@ def show_my_wines():
             st.session_state["pesquisa_vinhos"] = ""
             st.rerun()
 
+
+    elif pesquisa is not None and pesquisa.strip() != "":
+        #PESQUISA
+
+        regiao_selecionada = None
+        vinho_selecionado = None
+
+        termo = pesquisa.lower()
+
+        conexao = conectar()
+
+        df_pesquisa = pd.read_sql_query("""
+        SELECT
+            v.id,
+            v.nome,
+            v.vinicola_id,
+            vi.nome AS vinicola,
+            vi.pais,
+            vi.regiao,
+            v.uva,
+            v.safra,
+            v.tipo,
+            v.nota_vivino,
+            v.data_vinho,
+            v.observacoes,
+            v.pessoas,
+            v.foto_arquivo,
+            v.imagem_garrafa
+        FROM vinhos v
+        LEFT JOIN vinicolas vi
+            ON v.vinicola_id = vi.id
+        ORDER BY v.data_vinho DESC
+        """, 
+        conexao
+        )
+
+        df_pesquisa = df_pesquisa[
+            df_pesquisa.astype(str)
+            .apply(
+                lambda coluna: coluna.str.lower().str.contains(
+                    termo,
+                    na=False
+                )
+            )
+            .any(axis=1)
+        ]
+
+        if len(df_pesquisa) == 0:
+            st.info("Nenhum vinho encontrado.")
+                
+        else:
+            st.info(f"Encontrei {len(df_pesquisa)} vinho(s) na pesquisa.")
+
+        conexao.close()
+
+        for i, (_, vinho) in enumerate(df_pesquisa.iterrows()):
+
+                    vinho_id = vinho["id"]
+                    nome = vinho["nome"]
+                    tipo = vinho["tipo"]
+                    uva = vinho["uva"]
+                    vinicola = vinho["vinicola"]
+                    regiao = vinho["regiao"]
+                    pais = vinho["pais"]
+                    nota_vivino = vinho["nota_vivino"]
+                    observacoes = vinho["observacoes"]
+                    data_vinho = vinho["data_vinho"]
+                    pessoas = vinho["pessoas"]
+                    foto_arquivo = vinho["foto_arquivo"]
+                    imagem_garrafa = vinho["imagem_garrafa"]
+
+                    if data_vinho:
+                        data_vinho = datetime.strptime(str(data_vinho), "%Y:%m:%d %H:%M:%S").strftime("%d-%m-%Y")
+                    else:
+                        data_vinho = "."
+
+                    if uva is None or str(uva).lower() == "nan" or str(uva).strip() == "":
+                        uva = "Não informada ou não registrada"
+                    else:
+                        uva = html.escape(str(uva))
+
+                    if pd.notna(vinho["safra"]):
+                        safra = vinho["safra"]
+                    else:
+                        safra = "não informada"
+
+                    if nota_vivino is None or str(nota_vivino).lower() == "nan" or str(nota_vivino).strip() == "":
+                        nota = "⭐ Não disponível"
+                    else:                    
+                        nota = f"⭐ App Vivino: {vinho['nota_vivino']}"
+
+                    if observacoes is None or str(observacoes).lower() == "nan" or str(observacoes).strip() == "":
+                        observacoes = "."
+                    else:
+                        observacoes = html.escape(str(observacoes))
+
+                    if pessoas is None or str(pessoas).lower() == "nan" or str(pessoas).strip() == "":
+                        pessoas = "."
+                    else:
+                        pessoas = html.escape(str(pessoas))
+
+                    if foto_arquivo is None or str(foto_arquivo).lower() == "nan" or str(foto_arquivo).strip() == "":
+                        foto_arquivo = "-"
+                    else:
+                        foto_arquivo = str(foto_arquivo)
+
+
+                    imagem_garrafa_path = localizar_imagem_garrafa(imagem_garrafa)
+
+                    imagem_b64, mime_type = imagem_base64(imagem_garrafa_path)
+
+                    if imagem_b64:
+
+                        if not mime_type:
+                            mime_type = "image/png"
+
+                        imagem_html = f"""
+                            <img
+                                src="data:{mime_type};base64,{imagem_b64}"
+                                style="
+                                    width: 100%;
+                                    height: 250px;
+                                    object-fit: contain;
+                                    display: block;
+                                    margin: auto;
+                                "
+                            >
+                        """
+
+                    else:
+
+                        imagem_html = """
+                            <div style="
+                                height: 250px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-size: 40px;
+                            ">
+                                🍷
+                            </div>
+                        """
+
+                    st.markdown(f"""
+                    <div class="card">
+                        <!-- NOME DO VINHO -->
+                        <div class="card-texto-bold">{nome}</div>
+                        <!-- ÁREA DA IMAGEM DA GARRAFA + INFORMAÇÕES -->
+                        <div style="
+                            display: flex;
+                            width: 100%;
+                            margin-top: 15px;
+                            align-items: flex-start;
+                        ">
+                            <!-- FOTO DA GARRAFA -->
+                            <div style="
+                                width: 27%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                padding: 10px;
+                                box-sizing: border-box;
+                            ">{imagem_html}</div>
+                            <!-- INFORMAÇÕES -->
+                            <div style="
+                                width: 73%;
+                                padding: 5px 10px;
+                                box-sizing: border-box;
+                            ">
+                                <div class="card-texto">
+                                    Vinho {tipo}
+                                </div>
+                                <div class="card-texto">
+                                    Safra {safra}
+                                </div>
+                                <div style="height: 14px;"><br></div>
+                                <div class="card-texto">
+                                    🏛️ {vinicola}
+                                </div>
+                                <div class="card-texto">
+                                    📍 {regiao}, {pais}
+                                </div>
+                                <div style="height: 14px;"><br></div>
+                                <div class="card-texto">
+                                    🍇 Variedades:
+                                </div>
+                                <div class="card-texto">{uva}</div>
+                                <div style="height: 14px;"><br></div>
+                                <div class="card-texto">
+                                {nota}
+                                </div>
+                            </div>
+                        </div>
+                            <div class="card-texto-obs">
+                            Minhas anotações:
+                            </div>
+                            <div class="card-texto-obs">
+                            {data_vinho} - {observacoes}
+                            </div>
+                            <div class="card-texto-obs">
+                            {pessoas}
+                            </div>
+                        <!-- FOTO DA GARRAFA -->
+                            <div style="
+                                text-align: right;
+                            ">
+                                <div class="card-texto">
+                                    {foto_arquivo}
+                                </div>
+                            </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+
+                    if foto_arquivo != "-":
+
+                        if st.button(
+                            "Exibir foto do vinho",
+                            key=f"vinho_{vinho_id}",
+                            width="stretch"
+                        ):
+                            st.session_state["vinho_selecionado"] = vinho_id
+                            st.session_state["regiao_selecionada"] = None
+                            st.rerun()
+
+                    else:
+
+                        st.button(
+                            " ",
+                            key=f"vinho_{vinho_id}",
+                            width="stretch",
+                            disabled=True
+                        )
+
+        st.markdown(
+                f"""
+                <div style="
+                    text-align: left;
+                    margin-top: 2px;
+                    color: #666;
+                    font-size: 16px;
+                ">
+                    🍷 <b>{len(df_pesquisa)}</b> vinho(s) encontrado(s)
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+        st.write("")
+
+    else:
+        #LISTAR TODOS OS VINHOS
+
+        vinho_selecionado = None
+        regiao_selecionada = None
+        pesquisa = ""
+
+        conexao = conectar()
+
+        sql = """
+        SELECT
+            v.id,
+            v.nome,
+            v.vinicola_id,
+            vi.nome AS vinicola,
+            vi.pais,
+            vi.regiao,
+            v.uva,
+            v.safra,
+            v.tipo,
+            v.nota_vivino,
+            v.data_vinho,
+            v.observacoes,
+            v.pessoas,
+            v.foto_arquivo,
+            v.imagem_garrafa
+        FROM vinhos v
+        LEFT JOIN vinicolas vi
+            ON v.vinicola_id = vi.id
+        """
+
+        parametros = []
+
+        if ano_selecionado != "TODOS":
+            sql += """
+                WHERE v.ano_vinho = ?
+            """
+            parametros.append(ano_selecionado)
+
+        sql += """
+            ORDER BY v.data_vinho DESC
+        """
+
+        df_vinhos = pd.read_sql_query(
+            sql,
+            conexao,
+            params=parametros
+        )
+
+        conexao.close()
+
+        for i, (_, vinho) in enumerate(df_vinhos.iterrows()):
+
+                    vinho_id = vinho["id"]
+                    nome = vinho["nome"]
+                    tipo = vinho["tipo"]
+                    uva = vinho["uva"]
+                    vinicola = vinho["vinicola"]
+                    regiao = vinho["regiao"]
+                    pais = vinho["pais"]
+                    nota_vivino = vinho["nota_vivino"]
+                    observacoes = vinho["observacoes"]
+                    data_vinho = vinho["data_vinho"]
+                    pessoas = vinho["pessoas"]
+                    foto_arquivo = vinho["foto_arquivo"]
+                    imagem_garrafa = vinho["imagem_garrafa"]
+
+                    if data_vinho:
+                        data_vinho = datetime.strptime(str(data_vinho), "%Y:%m:%d %H:%M:%S").strftime("%d-%m-%Y")
+                    else:
+                        data_vinho = "."
+
+                    if uva is None or str(uva).lower() == "nan" or str(uva).strip() == "":
+                        uva = "Não informada ou não registrada"
+                    else:
+                        uva = html.escape(str(uva))
+
+                    if pd.notna(vinho["safra"]):
+                        safra = vinho["safra"]
+                    else:
+                        safra = "não informada"
+
+                    if nota_vivino is None or str(nota_vivino).lower() == "nan" or str(nota_vivino).strip() == "":
+                        nota = "⭐ Não disponível"
+                    else:                    
+                        nota = f"⭐ App Vivino: {vinho['nota_vivino']}"
+
+                    if observacoes is None or str(observacoes).lower() == "nan" or str(observacoes).strip() == "":
+                        observacoes = "."
+                    else:
+                        observacoes = html.escape(str(observacoes))
+
+                    if pessoas is None or str(pessoas).lower() == "nan" or str(pessoas).strip() == "":
+                        pessoas = "."
+                    else:
+                        pessoas = html.escape(str(pessoas))
+
+                    if foto_arquivo is None or str(foto_arquivo).lower() == "nan" or str(foto_arquivo).strip() == "":
+                        foto_arquivo = "-"
+                    else:
+                        foto_arquivo = str(foto_arquivo)
+
+
+                    imagem_garrafa_path = localizar_imagem_garrafa(imagem_garrafa)
+
+                    imagem_b64, mime_type = imagem_base64(imagem_garrafa_path)
+
+                    if imagem_b64:
+
+                        if not mime_type:
+                            mime_type = "image/png"
+
+                        imagem_html = f"""
+                            <img
+                                src="data:{mime_type};base64,{imagem_b64}"
+                                style="
+                                    width: 100%;
+                                    height: 250px;
+                                    object-fit: contain;
+                                    display: block;
+                                    margin: auto;
+                                "
+                            >
+                        """
+
+                    else:
+
+                        imagem_html = """
+                            <div style="
+                                height: 250px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-size: 40px;
+                            ">
+                                🍷
+                            </div>
+                        """
+
+                    st.markdown(f"""
+                    <div class="card">
+                        <!-- NOME DO VINHO -->
+                        <div class="card-texto-bold">{nome}</div>
+                        <!-- ÁREA DA IMAGEM DA GARRAFA + INFORMAÇÕES -->
+                        <div style="
+                            display: flex;
+                            width: 100%;
+                            margin-top: 15px;
+                            align-items: flex-start;
+                        ">
+                            <!-- FOTO DA GARRAFA -->
+                            <div style="
+                                width: 27%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                padding: 10px;
+                                box-sizing: border-box;
+                            ">{imagem_html}</div>
+                            <!-- INFORMAÇÕES -->
+                            <div style="
+                                width: 73%;
+                                padding: 5px 10px;
+                                box-sizing: border-box;
+                            ">
+                                <div class="card-texto">
+                                    Vinho {tipo}
+                                </div>
+                                <div class="card-texto">
+                                    Safra {safra}
+                                </div>
+                                <div style="height: 14px;"><br></div>
+                                <div class="card-texto">
+                                    🏛️ {vinicola}
+                                </div>
+                                <div class="card-texto">
+                                    📍 {regiao}, {pais}
+                                </div>
+                                <div style="height: 14px;"><br></div>
+                                <div class="card-texto">
+                                    🍇 Variedades:
+                                </div>
+                                <div class="card-texto">{uva}</div>
+                                <div style="height: 14px;"><br></div>
+                                <div class="card-texto">
+                                {nota}
+                                </div>
+                            </div>
+                        </div>
+                            <div class="card-texto-obs">
+                            Minhas anotações:
+                            </div>
+                            <div class="card-texto-obs">
+                            {data_vinho} - {observacoes}
+                            </div>
+                            <div class="card-texto-obs">
+                            {pessoas}
+                            </div>
+                        <!-- FOTO DA GARRAFA -->
+                            <div style="
+                                text-align: right;
+                            ">
+                                <div class="card-texto">
+                                    {foto_arquivo}
+                                </div>
+                            </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+
+                    if foto_arquivo != "-":
+
+                        if st.button(
+                            "Exibir foto do vinho",
+                            key=f"vinho_{vinho_id}",
+                            width="stretch"
+                        ):
+                            st.session_state["vinho_selecionado"] = vinho_id
+                            st.session_state["regiao_selecionada"] = None
+                            st.rerun()
+
+                    else:
+
+                        st.button(
+                            " ",
+                            key=f"vinho_{vinho_id}",
+                            width="stretch",
+                            disabled=True
+                        )
+
+        st.markdown(
+                f"""
+                <div style="
+                    text-align: left;
+                    margin-top: 2px;
+                    color: #666;
+                    font-size: 16px;
+                ">
+                    🍷 <b>{len(df_vinhos)}</b> vinho(s) encontrado(s)
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+    st.write("")
+  
