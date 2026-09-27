@@ -72,6 +72,7 @@ def mostrar_detalhes_vinicola(vinicola_id):
             ano_vinho
         FROM vinhos
         WHERE vinicola_id = ?
+        ORDER BY data_vinho DESC
         """,
         conexao,
         params=(vinicola_id,)
@@ -232,18 +233,6 @@ def mostrar_detalhes_vinicola(vinicola_id):
         st.info("No wines from this winery are in your collection yet.")
 
     else:
-
-        # Ordenação por safra e depois por nome
-        df_vinhos["safra_ordem"] = pd.to_numeric(
-            df_vinhos["safra"],
-            errors="coerce"
-        )
-
-        df_vinhos = df_vinhos.sort_values(
-            by=["safra_ordem", "nome"],
-            ascending=[False, True],
-            na_position="last"
-        )
 
         for _, vinho in df_vinhos.iterrows():
 
