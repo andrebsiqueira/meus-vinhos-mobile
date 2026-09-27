@@ -299,6 +299,52 @@ def show_home():
     )
 
     # ==========================================================
+    # CHART 3 - TOP 10 WINERIES IN MY WINE COLLECION
+    # ==========================================================
+
+    st.markdown(
+        '<div class="secao" style="font-size: 22px; text-align: left;">Chart 3: Top 10 Wineries in My Wine Collection</div>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    qtd_por_vinicola = (
+        df_vinhos["vinicola"]
+        .dropna()
+        .value_counts()
+        .head(10)
+        .reset_index()
+    )
+
+    qtd_por_vinicola.columns = ["Winery", "Quantidade"]
+
+    st.vega_lite_chart(
+        qtd_por_vinicola,
+        {
+            "mark": {
+                "type": "bar",
+                "color": "#722F37"
+            },
+            "encoding": {
+                "y": {
+                    "field": "Winery",
+                    "type": "nominal",
+                    "sort": "-x",
+                    "title": None
+                },
+                "x": {
+                    "field": "Quantidade",
+                    "type": "quantitative",
+                    "title": "Number of Bottles"
+                }
+            },
+            "height": 330
+        },
+        width="stretch"
+    )
+    
+    # ==========================================================
     # TOP 10 WINES BY VIVINO APP RATING
     # ==========================================================
 
