@@ -355,7 +355,6 @@ def show_home():
                 ">
                     {i}
                 </div>
-
                 <div style="
                     flex: 1;
                     padding-left: 8px;
@@ -366,7 +365,6 @@ def show_home():
                     ">
                         {nome}
                     </div>
-
                     <div style="
                         font-size: 13px;
                         opacity: 0.70;
@@ -375,7 +373,6 @@ def show_home():
                         {vinicola}
                     </div>
                 </div>
-
                 <div style="
                     font-size: 16px;
                     font-weight: 600;
