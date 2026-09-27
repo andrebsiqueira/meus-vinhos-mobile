@@ -1,18 +1,14 @@
-# Meus Vinhos App
-```
-Mobile version
-```
 ## Demo App
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://meus-vinhos-mobile.streamlit.app/)
 
-## Section Heading
+## About
 
-This is filler text, please replace this with text for this section.
+A mobile-friendly application built with Python. Streamlit and SQLite to explore and manage my personal wine collection.
+
+The app allows users to browse wines, wineries, producing regions, grape varieties and people associated with the wine collection.
 
 ## Further Reading
 
-This is filler text, please replace this with a explanatory text about further relevant resources for this repo
-- Resource 1
-- Resource 2
-- Resource 3
+- [Streamlit Documentation](https://docs.streamlit.io/)
+- [Python Documentation](https://docs.python.org/3/)
