@@ -189,11 +189,10 @@ def obter_sessao_cloud():
 
 def criar_usuario_acesso():
 
-    if "acesso_id" in st.session_state:
-        return st.session_state["acesso_id"]
+    if "sessao_cloud" in st.session_state:
+        return st.session_state["sessao_cloud"]
 
     dados = obter_dados_acesso()
-
     sessao_cloud = obter_sessao_cloud()
 
     conexao = conectar()
@@ -202,6 +201,7 @@ def criar_usuario_acesso():
     cursor.execute(
         """
         INSERT INTO usuario_acessos (
+            sessao_cloud,
             nome,
             data_hora,
             ip,
@@ -213,12 +213,12 @@ def criar_usuario_acesso():
             sistema_operacional,
             navegador,
             versao_navegador,
-            versao_app,
-            sessao_cloud
+            versao_app
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
+            sessao_cloud,
             None,
             dados["data_hora"],
             dados["ip"],
@@ -231,18 +231,15 @@ def criar_usuario_acesso():
             dados["navegador"],
             dados["versao_navegador"],
             dados["versao_app"],
-            sessao_cloud,
         )
     )
-
-    acesso_id = cursor.lastrowid
 
     conexao.commit()
     conexao.close()
 
-    st.session_state["acesso_id"] = acesso_id
+    st.session_state["sessao_cloud"] = sessao_cloud
 
-    return acesso_id
+    return sessao_cloud
 
 
     # --------------------------------------------------------
@@ -261,9 +258,9 @@ def criar_usuario_acesso():
 
 def atualizar_nome_acesso(nome):
 
-    acesso_id = st.session_state.get("acesso_id")
+    sessao_cloud = st.session_state.get("sessao_cloud")
 
-    if not acesso_id:
+    if not sessao_cloud:
         return
 
     nome = nome.strip()
@@ -277,9 +274,12 @@ def atualizar_nome_acesso(nome):
         """
         UPDATE usuario_acessos
         SET nome = ?
-        WHERE id = ?
+        WHERE sessao_cloud = ?
         """,
-        (nome, acesso_id)
+        (
+            nome,
+            sessao_cloud
+        )
     )
 
     conexao.commit()
@@ -320,15 +320,13 @@ def buscar_nome_acesso():
 
 def registrar_pagina(pagina):
 
-    acesso_id = st.session_state.get("acesso_id")
+    sessao_cloud = st.session_state.get("sessao_cloud")
 
-    if not acesso_id:
+    if not sessao_cloud:
         return
 
     if st.session_state.get("ultima_pagina") == pagina:
         return
-
-    sessao_cloud = obter_sessao_cloud()
 
     data_hora = datetime.now(
         ZoneInfo("America/Sao_Paulo")
@@ -340,15 +338,13 @@ def registrar_pagina(pagina):
     cursor.execute(
         """
         INSERT INTO usuario_acessos_paginas (
-            acesso_id,
             sessao_cloud,
             pagina,
             data_hora
         )
-        VALUES (?, ?, ?, ?)
+        VALUES (?, ?, ?)
         """,
         (
-            acesso_id,
             sessao_cloud,
             pagina,
             data_hora
