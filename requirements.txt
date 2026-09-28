@@ -1,8 +1,12 @@
 streamlit
 streamlit_option_menu
 pandas
+pathlib
 plotly
 pillow
 pillow-heif
 rapidocr-onnxruntime
 google-genai
+datetime
+zoneinfo
+sqlite3
