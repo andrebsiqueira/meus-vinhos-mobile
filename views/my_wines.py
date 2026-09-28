@@ -329,7 +329,7 @@ def show_my_wines():
             v.nome,
             v.vinicola_id,
             vi.nome AS vinicola,
-            vi.pais,
+            vi.pais AS pais,
             vi.regiao,
             v.uva,
             v.safra,
@@ -351,11 +351,26 @@ def show_my_wines():
 
         pesquisa = ""
 
+        # Busca o país diretamente na tabela de vinícolas,
+        # mesmo quando não existem vinhos cadastrados nessa região.
+        df_pais = pd.read_sql_query("""
+            SELECT DISTINCT pais
+            FROM vinicolas
+            WHERE regiao = ?
+            AND pais IS NOT NULL
+            AND TRIM(pais) <> ''
+            ORDER BY pais
+        """,
+        conexao,
+        params=(regiao_selecionada,))
+
         pais = ""
 
-        if not df_regiao_filtrada.empty:
-            pais = df_regiao_filtrada.iloc[0]["pais"]
-
+        if not df_pais.empty:
+            pais = ", ".join(
+                df_pais["pais"].dropna().astype(str).unique()
+            )
+            
         st.markdown(
             f"### 🌎 {regiao_selecionada}, {pais}"
         )
@@ -782,7 +797,7 @@ def show_my_wines():
                     if foto_arquivo != "-":
 
                         if st.button(
-                            "Exibir foto do vinho",
+                            "View wine photo",
                             key=f"vinho_{vinho_id}",
                             width="stretch"
                         ):
