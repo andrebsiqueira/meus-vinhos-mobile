@@ -5,6 +5,8 @@ from pathlib import Path
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
+import sqlite3
+
 from banco import conectar
 
 def show_settings():
@@ -36,6 +38,15 @@ def show_settings():
 
         st.markdown(
             '<div style="font-size: 18px; font-weight: 600; margin-top: 10px;">Wine Data</div>',
+            unsafe_allow_html=True
+        )
+
+        st.markdown(
+            '<div style="'
+            'border-bottom: 1px solid rgba(128,128,128,0.20);'
+            'margin-top: 5px;'
+            'margin-bottom: 15px;'
+            '"></div>',
             unsafe_allow_html=True
         )
 
@@ -109,8 +120,38 @@ def show_settings():
 
         conn.close()
 
+        # ==========================================================
+        # PERCENTAGES
+        # ==========================================================
+
+        percent_wine_photos = (
+            (vinhos_com_fotos / total_vinhos) * 100
+            if total_vinhos > 0
+            else 0
+        )
+
+        percent_wineries_without_wines = (
+            (vinicolas_sem_vinhos / total_vinicolas) * 100
+            if total_vinicolas > 0
+            else 0
+        )
+
+        percent_region_images = (
+            (total_region_images / total_regioes) * 100
+            if total_regioes > 0
+            else 0
+        )
+
+        percent_wine_photos_text = f"{percent_wine_photos:.1f}".replace(".", ",")
+
+        percent_wineries_without_wines_text = (
+            f"{percent_wineries_without_wines:.1f}".replace(".", ",")
+        )
+
+        percent_region_images_text = f"{percent_region_images:.1f}".replace(".", ",")
+
         # ----------------------------------------------------------
-        # ROW 1 - WINES / WINERIES
+        # ROW 1
         # ----------------------------------------------------------
 
         st.markdown(
@@ -155,7 +196,7 @@ def show_settings():
                         font-weight: 600;
                         margin-top: 4px;
                     ">
-                        {vinhos_com_fotos}
+                        {vinhos_com_fotos} ({percent_wine_photos_text}%)
                     </div>
                 </div>
             </div>
@@ -165,7 +206,7 @@ def show_settings():
 
 
         # ----------------------------------------------------------
-        # ROW 2 - REGIONS / COUNTRIES
+        # ROW 2
         # ----------------------------------------------------------
 
         st.markdown(
@@ -210,7 +251,7 @@ def show_settings():
                         font-weight: 600;
                         margin-top: 4px;
                     ">
-                        {vinicolas_sem_vinhos}
+                        {vinicolas_sem_vinhos} ({percent_wineries_without_wines_text}%)
                     </div>
                 </div>
             </div>
@@ -220,7 +261,7 @@ def show_settings():
 
 
         # ----------------------------------------------------------
-        # ROW 3 - PEOPLE / WINE PHOTOS
+        # ROW 3
         # ----------------------------------------------------------
 
         st.markdown(
@@ -265,7 +306,7 @@ def show_settings():
                         font-weight: 600;
                         margin-top: 4px;
                     ">
-                        {total_region_images}
+                        {total_region_images} ({percent_region_images_text}%)
                     </div>
                 </div>
             </div>
@@ -275,7 +316,7 @@ def show_settings():
 
 
         # ----------------------------------------------------------
-        # ROW 4 - BOTTLE IMAGES / TASTING DATES
+        # ROW 4
         # ----------------------------------------------------------
 
         st.markdown(
@@ -364,12 +405,29 @@ def show_settings():
                 "%d/%m/%Y %H:%M"
             )
 
+            sqlite_version = sqlite3.sqlite_version
+
             st.markdown(
                 f"""
                 <div style="
                     width: 100%;
                     padding: 10px 5px;
                 ">
+                <div style="
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 8px;
+                ">
+                    <span style="font-size: 14px;">
+                        SQLite version
+                    </span>
+                    <span style="
+                        font-size: 14px;
+                        font-weight: 600;
+                    ">
+                        {sqlite_version}
+                    </span>
+                    </div>
                     <div style="
                         display: flex;
                         justify-content: space-between;
