@@ -12,6 +12,7 @@ def show_settings():
         unsafe_allow_html=True
     )
 
+    st.markdown("<br>", unsafe_allow_html=True)
 
     # ==========================================================
     # WINE PHOTOS - DATABASE CHECK
@@ -116,7 +117,7 @@ def show_settings():
                 len(fotos_faltando)
             )
 
-        st.markdown("<br>", unsafe_allow_html=True)
+        #st.markdown("<br>", unsafe_allow_html=True)
 
         # ------------------------------------------------------
         # FOTOS FALTANDO
