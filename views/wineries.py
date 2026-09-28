@@ -86,14 +86,16 @@ def mostrar_detalhes_vinicola(vinicola_id):
 
     vinicola = df.iloc[0]
 
-    st.markdown(
-        f"""
-        <div class="secao" style="font-size: 28px;">
-            {vinicola["nome"]}
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    #st.markdown(
+    #    f"""
+    #    <div class="secao" style="font-size: 28px;">
+    #        {vinicola["nome"]}
+    #    </div>
+    #    """,
+    #    unsafe_allow_html=True
+    #)
+
+    st.markdown(f'### {vinicola["nome"]}')
 
     # PAÍS / REGIÃO
     pais = vinicola["pais"]
