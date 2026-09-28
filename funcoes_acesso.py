@@ -242,16 +242,6 @@ def criar_usuario_acesso():
     return sessao_cloud
 
 
-    # --------------------------------------------------------
-    # Guarda o ID da sessão
-    # --------------------------------------------------------
-
-    st.session_state["acesso_id"] = acesso_id
-
-
-    return acesso_id
-
-
 # ============================================================
 # ATUALIZA O NOME DO USUÁRIO
 # ============================================================
@@ -289,21 +279,22 @@ def atualizar_nome_acesso(nome):
 
 def buscar_nome_acesso():
 
-    acesso_id = st.session_state.get("acesso_id")
+    sessao_cloud = st.session_state.get("sessao_cloud")
 
-    if not acesso_id:
+    if not sessao_cloud:
         return None
 
     conexao = conectar()
 
     try:
+
         resultado = conexao.execute(
             """
             SELECT nome
             FROM usuario_acessos
-            WHERE id = ?
+            WHERE sessao_cloud = ?
             """,
-            (acesso_id,)
+            (sessao_cloud,)
         ).fetchone()
 
         if resultado:
@@ -366,12 +357,12 @@ def buscar_acessos():
     conexao = conectar()
 
     try:
+
         import pandas as pd
 
         df = pd.read_sql_query(
             """
             SELECT
-                id,
                 sessao_cloud,
                 nome,
                 data_hora,
@@ -401,10 +392,9 @@ def buscar_acessos():
 # BUSCA AS PÁGINAS DE UM ACESSO
 # ============================================================
 
-def buscar_paginas_acesso(acesso_id):
+def buscar_paginas_acesso(sessao_cloud):
 
     conexao = conectar()
-
 
     df = None
 
@@ -415,23 +405,19 @@ def buscar_paginas_acesso(acesso_id):
         df = pd.read_sql_query(
             """
             SELECT
-                id,
                 sessao_cloud,
-                acesso_id,
                 pagina,
                 data_hora
             FROM usuario_acessos_paginas
-            WHERE acesso_id = ?
+            WHERE sessao_cloud = ?
             ORDER BY data_hora ASC
             """,
             conexao,
-            params=(acesso_id,)
+            params=(sessao_cloud,)
         )
 
     finally:
 
         conexao.close()
 
-
     return df
-
