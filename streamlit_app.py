@@ -82,7 +82,7 @@ st.markdown("""
         overflow: hidden;
         overflow-wrap: break-word;
         word-break: break-word;
-        height: 520px;
+        height: 500px;
         background-color: #F5E6E8;
     }
 
