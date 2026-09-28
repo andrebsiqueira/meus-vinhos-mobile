@@ -209,7 +209,7 @@ def criar_usuario_acesso():
 
     conexao = conectar()
 
-    print("BANCO:", conexao.execute(
+    st.write("BANCO:", conexao.execute(
         "PRAGMA database_list"
     ).fetchall())
 
@@ -254,13 +254,13 @@ def criar_usuario_acesso():
 
     conexao.commit()
 
-    print("ACESSO GRAVADO:", acesso_id)
+    st.write("ACESSO GRAVADO:", acesso_id)
     
     resultado = conexao.execute(
         "SELECT COUNT(*) FROM usuario_acessos"
     ).fetchone()
     
-    print("TOTAL DE ACESSOS:", resultado[0])
+    st.write("TOTAL DE ACESSOS:", resultado[0])
     
     conexao.close()
 
