@@ -345,11 +345,11 @@ def show_home():
     )
     
     # ==========================================================
-    # TOP 10 WINES IN MY COLLECTION BY VIVINO APP RATING
+    # TOP 15 WINES IN MY COLLECTION BY VIVINO APP RATING
     # ==========================================================
 
     st.markdown(
-        '<div class="secao" style="font-size: 22px; text-align: left;">Top 10 Wines in My Collection by Vivino App Rating</div>',
+        '<div class="secao" style="font-size: 22px; text-align: left;">Top 15 Wines in My Collection by Vivino App Rating</div>',
         unsafe_allow_html=True
     )
 
@@ -373,7 +373,7 @@ def show_home():
             by="nota_vivino",
             ascending=False
         )
-        .head(10)
+        .head(15)
         .reset_index(drop=True)
     )
 
