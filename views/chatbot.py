@@ -1,7 +1,34 @@
 import streamlit as st
 from google import genai
 
+import random
+
 def show_chatbot():
+
+    wine_quotes = [
+        "Every bottle tells a story.",
+        "Good wine, good company, good memories.",
+        "Wine is the poetry of the table.",
+        "A great wine is an experience, not just a drink.",
+        "Wine brings people together.",
+        "Life is too short for ordinary wine.",
+        "There is always a story behind a bottle.",
+        "Good wine deserves good company.",
+        "Discover. Taste. Remember.",
+        "One bottle, many memories.",
+        "Wine turns moments into memories.",
+        "Every vintage has a story to tell.",
+        "The best wines are the ones we remember.",
+        "A bottle shared is a memory made.",
+        "Wine is about place, time, and people.",
+        "Explore the world one bottle at a time.",
+        "Sometimes the best plans begin with a bottle of wine.",
+        "Open a bottle, open a story.",
+        "Wine makes ordinary moments memorable.",
+        "Collect bottles. Create memories.",
+        "Good wine is meant to be enjoyed.",
+        "Behind every bottle, there is a journey."
+    ]
 
     st.markdown(
         '<div class="secao" style="font-size: 28px;">🤖 AI Chatbot</div>',
@@ -9,7 +36,32 @@ def show_chatbot():
     )
 
     st.markdown("<br>", unsafe_allow_html=True)
-    
+
+    frase = random.choice(wine_quotes)
+
+    st.markdown(
+        f"""
+        <div style="
+            text-align: left;
+            font-style: italic;
+            opacity: 0.80;
+        ">
+            “{frase}”
+        </div>
+
+        <div style="
+            text-align: left;
+            margin-top: 5px;
+            font-weight: 600;
+        ">
+            Let's talk about it!
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
     # ============================================================
     # API KEY
     # ============================================================
