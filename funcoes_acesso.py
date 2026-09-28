@@ -21,7 +21,9 @@ VERSAO_APP = "1.0.0"
 def obter_dados_acesso():
 
     dados = {
-        "data_hora": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "data_hora": datetime.now(
+            ZoneInfo("America/Sao_Paulo")
+        ).strftime("%Y-%m-%d %H:%M:%S"),
         "ip": None,
         "pais": None,
         "estado": None,
@@ -34,19 +36,13 @@ def obter_dados_acesso():
         "versao_app": VERSAO_APP,
     }
 
-    # ========================================================
-    # USER-AGENT
-    # ========================================================
-
     try:
-
         headers = st.context.headers
-
         user_agent = headers.get("User-Agent", "")
 
-        # ----------------------------------------------------
+        # ====================================================
         # DISPOSITIVO
-        # ----------------------------------------------------
+        # ====================================================
 
         if "Mobile" in user_agent:
             dados["dispositivo"] = "Mobile"
@@ -57,9 +53,9 @@ def obter_dados_acesso():
         else:
             dados["dispositivo"] = "Desktop"
 
-        # ----------------------------------------------------
+        # ====================================================
         # SISTEMA OPERACIONAL
-        # ----------------------------------------------------
+        # ====================================================
 
         if "iPhone" in user_agent:
             dados["sistema_operacional"] = "iOS"
@@ -79,9 +75,9 @@ def obter_dados_acesso():
         elif "Linux" in user_agent:
             dados["sistema_operacional"] = "Linux"
 
-        # ----------------------------------------------------
+        # ====================================================
         # NAVEGADOR
-        # ----------------------------------------------------
+        # ====================================================
 
         if "Edg/" in user_agent:
             dados["navegador"] = "Edge"
@@ -98,30 +94,26 @@ def obter_dados_acesso():
         elif "Safari/" in user_agent:
             dados["navegador"] = "Safari"
 
-        # ----------------------------------------------------
+        # ====================================================
         # VERSÃO DO NAVEGADOR
-        # ----------------------------------------------------
+        # ====================================================
 
         if "Edg/" in user_agent:
-
             dados["versao_navegador"] = (
                 user_agent.split("Edg/")[1].split(" ")[0]
             )
 
         elif "Chrome/" in user_agent:
-
             dados["versao_navegador"] = (
                 user_agent.split("Chrome/")[1].split(" ")[0]
             )
 
         elif "Firefox/" in user_agent:
-
             dados["versao_navegador"] = (
                 user_agent.split("Firefox/")[1].split(" ")[0]
             )
 
         elif "Version/" in user_agent:
-
             dados["versao_navegador"] = (
                 user_agent.split("Version/")[1].split(" ")[0]
             )
@@ -129,13 +121,11 @@ def obter_dados_acesso():
     except Exception:
         pass
 
-
     # ========================================================
     # IP
     # ========================================================
 
     try:
-
         headers = st.context.headers
 
         ip = (
@@ -145,22 +135,18 @@ def obter_dados_acesso():
         )
 
         if ip:
-
-            # X-Forwarded-For pode conter vários IPs
             dados["ip"] = ip.split(",")[0].strip()
 
     except Exception:
         pass
 
-
     # ========================================================
-    # GEOLOCALIZAÇÃO APROXIMADA PELO IP
+    # GEOLOCALIZAÇÃO PELO IP
     # ========================================================
 
     if dados["ip"]:
 
         try:
-
             resposta = requests.get(
                 f"https://ipinfo.io/{dados['ip']}/json",
                 timeout=3
@@ -178,9 +164,7 @@ def obter_dados_acesso():
         except Exception:
             pass
 
-
     return dados
-
 
 # ============================================================
 # CRIA UM NOVO ACESSO
@@ -341,7 +325,6 @@ def registrar_pagina(pagina):
     if st.session_state.get("ultima_pagina") == pagina:
         return
 
-
     data_hora = datetime.now(
         ZoneInfo("America/Sao_Paulo")
     ).strftime(
@@ -453,76 +436,3 @@ def buscar_paginas_acesso(acesso_id):
 
     return df
 
-# ============================================================
-# BUSCA OS ACESSOS
-# ============================================================
-
-def buscar_acessos():
-
-    conexao = conectar()
-
-    try:
-
-        import pandas as pd
-
-        df = pd.read_sql_query(
-            """
-            SELECT
-                id,
-                nome,
-                data_hora,
-                ip,
-                pais,
-                estado,
-                cidade,
-                fuso_horario,
-                dispositivo,
-                sistema_operacional,
-                navegador,
-                versao_navegador,
-                versao_app
-            FROM usuario_acessos
-            ORDER BY data_hora DESC
-            """,
-            conexao
-        )
-
-        return df
-
-    finally:
-
-        conexao.close()
-
-
-# ============================================================
-# BUSCA AS PÁGINAS DE UM ACESSO
-# ============================================================
-
-def buscar_paginas_acesso(acesso_id):
-
-    conexao = conectar()
-
-    try:
-
-        import pandas as pd
-
-        df = pd.read_sql_query(
-            """
-            SELECT
-                id,
-                acesso_id,
-                pagina,
-                data_hora
-            FROM usuario_acessos_paginas
-            WHERE acesso_id = ?
-            ORDER BY data_hora ASC
-            """,
-            conexao,
-            params=(acesso_id,)
-        )
-
-        return df
-
-    finally:
-
-        conexao.close()
