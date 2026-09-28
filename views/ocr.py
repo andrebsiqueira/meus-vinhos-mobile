@@ -9,3 +9,7 @@ def show_ocr():
         '<div class="secao" style="font-size: 28px;">🔍 OCR</div>',
         unsafe_allow_html=True
     )
+
+    st.info(
+            "File reading with Optical Character Recognition (OCR)"
+        )
