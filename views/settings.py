@@ -107,7 +107,7 @@ def show_access_control():
         data_hora = acesso["data_hora"]
 
         with st.expander(
-            f"👤 {nome} • {data_hora}"
+            f"👤 ID {acesso['id']} • {nome} • {data_hora}"
         ):
 
             col1, col2 = st.columns(2)
@@ -116,6 +116,11 @@ def show_access_control():
 
                 st.write(
                     f"**Access ID:** {acesso['id']}"
+                )
+
+                st.write(
+                    f"**Cloud Session:** "
+                    f"{acesso['sessao_cloud'] or 'Not available'}"
                 )
 
                 st.write(
