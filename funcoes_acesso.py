@@ -420,6 +420,7 @@ def buscar_paginas_acesso(acesso_id):
             """
             SELECT
                 id,
+                sessao_cloud,
                 acesso_id,
                 pagina,
                 data_hora
