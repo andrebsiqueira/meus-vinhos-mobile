@@ -16,11 +16,8 @@ def show_initial():
             text-align: center;
             padding: 20px 10px 10px 10px;
         ">
-            <div style="font-size: 50px;">
-                🍷
-            </div>
             <h2>
-                Welcome to Meus Vinhos
+                Welcome to Meus Vinhos Mobile APP 🍷
             </h2>
             <p>
                 Tell us your name
