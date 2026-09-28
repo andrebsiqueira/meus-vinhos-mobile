@@ -6,6 +6,7 @@ from zoneinfo import ZoneInfo
 
 from banco import conectar
 
+import uuid
 
 # ============================================================
 # CONFIGURAÇÕES
@@ -170,35 +171,38 @@ def obter_dados_acesso():
 # CRIA UM NOVO ACESSO
 # ============================================================
 
+def obter_sessao_cloud():
+
+    if "sessao_cloud" not in st.session_state:
+
+        data = datetime.now(
+            ZoneInfo("America/Sao_Paulo")
+        ).strftime("%Y%m%d")
+
+        codigo = uuid.uuid4().hex[:8].upper()
+
+        st.session_state["sessao_cloud"] = (
+            f"{data}-{codigo}"
+        )
+
+    return st.session_state["sessao_cloud"]
+
 def criar_usuario_acesso():
 
-    # --------------------------------------------------------
-    # Se já existe um acesso nesta sessão, não cria outro
-    # --------------------------------------------------------
-
     if "acesso_id" in st.session_state:
-
         return st.session_state["acesso_id"]
-
-
-    # --------------------------------------------------------
-    # Coleta os dados
-    # --------------------------------------------------------
 
     dados = obter_dados_acesso()
 
-
-    # --------------------------------------------------------
-    # Insere no banco
-    # --------------------------------------------------------
+    sessao_cloud = obter_sessao_cloud()
 
     conexao = conectar()
     cursor = conexao.cursor()
 
-
     cursor.execute(
         """
         INSERT INTO usuario_acessos (
+            nome,
             data_hora,
             ip,
             pais,
@@ -209,11 +213,13 @@ def criar_usuario_acesso():
             sistema_operacional,
             navegador,
             versao_navegador,
-            versao_app
+            versao_app,
+            sessao_cloud
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
+            None,
             dados["data_hora"],
             dados["ip"],
             dados["pais"],
@@ -225,15 +231,18 @@ def criar_usuario_acesso():
             dados["navegador"],
             dados["versao_navegador"],
             dados["versao_app"],
+            sessao_cloud,
         )
     )
 
-
     acesso_id = cursor.lastrowid
-
 
     conexao.commit()
     conexao.close()
+
+    st.session_state["acesso_id"] = acesso_id
+
+    return acesso_id
 
 
     # --------------------------------------------------------
@@ -316,47 +325,39 @@ def registrar_pagina(pagina):
     if not acesso_id:
         return
 
-
-    # --------------------------------------------------------
-    # Evita registrar a mesma página várias vezes devido
-    # aos reruns do Streamlit
-    # --------------------------------------------------------
-
     if st.session_state.get("ultima_pagina") == pagina:
         return
 
+    sessao_cloud = obter_sessao_cloud()
+
     data_hora = datetime.now(
         ZoneInfo("America/Sao_Paulo")
-    ).strftime(
-        "%Y-%m-%d %H:%M:%S"
-    )
+    ).strftime("%Y-%m-%d %H:%M:%S")
 
     conexao = conectar()
     cursor = conexao.cursor()
-
 
     cursor.execute(
         """
         INSERT INTO usuario_acessos_paginas (
             acesso_id,
+            sessao_cloud,
             pagina,
             data_hora
         )
-        VALUES (?, ?, ?)
+        VALUES (?, ?, ?, ?)
         """,
         (
             acesso_id,
+            sessao_cloud,
             pagina,
             data_hora
         )
     )
 
-
     conexao.commit()
     conexao.close()
 
-
-    # Guarda a última página registrada
     st.session_state["ultima_pagina"] = pagina
 
 
