@@ -208,6 +208,11 @@ def criar_usuario_acesso():
     # --------------------------------------------------------
 
     conexao = conectar()
+
+    print("BANCO:", conexao.execute(
+        "PRAGMA database_list"
+    ).fetchall())
+
     cursor = conexao.cursor()
 
 
