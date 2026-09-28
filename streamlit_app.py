@@ -49,9 +49,9 @@ st.set_page_config(
 st.markdown("""
 <style>
     .block-container {
-        padding-top: 0.5rem;
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
+        padding-top: 1rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
     }
 
     .titulo {
