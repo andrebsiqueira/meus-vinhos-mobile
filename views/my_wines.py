@@ -132,9 +132,11 @@ def show_my_wines():
 
         if safra == None:
             safra = " "
+        else:
+            safra = "· " + df_vinho_filtrado.iloc[0]["safra"]
 
         st.markdown(
-            f"### {nome} · {safra}"
+            f"### {nome} {safra}"
         )
 
         st.info(
