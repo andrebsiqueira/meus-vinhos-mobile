@@ -277,10 +277,11 @@ def show_settings():
         " ",
         "Database Information",
         "Check Wine Photos in Folder",
+        "Access Control & Maintenance"
         "Register a New Winery with AI Assistance",
         "Register a New Person (Wine Lover)",
         "Register a New Wine with AI Assistance",
-        "Access Control & Maintenance"
+
     ]
 
     selected_option = st.selectbox(
