@@ -6,22 +6,9 @@ from funcoes_acesso import (
 )
 
 
-# ============================================================
-# TELA INITIAL
-# ============================================================
-
 def show_initial():
 
-    # --------------------------------------------------------
-    # Cria o registro do acesso
-    # --------------------------------------------------------
-
     criar_usuario_acesso()
-
-
-    # --------------------------------------------------------
-    # Tela de apresentação
-    # --------------------------------------------------------
 
     st.markdown(
         """
@@ -43,11 +30,6 @@ def show_initial():
         unsafe_allow_html=True
     )
 
-
-    # --------------------------------------------------------
-    # Nome
-    # --------------------------------------------------------
-
     nome = st.text_input(
         "Name",
         placeholder="Enter your name...",
@@ -55,47 +37,20 @@ def show_initial():
         key="initial_nome"
     )
 
+    if st.button(
+        "Continue 🍷",
+        width="stretch"
+    ):
 
-    # --------------------------------------------------------
-    # Botões
-    # --------------------------------------------------------
+        nome = nome.strip()
 
-    col1, col2 = st.columns(2)
+        if not nome:
+            st.warning("Please enter your name.")
+            st.stop()
 
+        atualizar_nome_acesso(nome)
 
-    # ========================================================
-    # CONTINUE
-    # ========================================================
+        st.session_state["nome_usuario"] = nome
+        st.session_state["initial_completed"] = True
 
-    with col1:
-
-        if st.button(
-            "Continue 🍷",
-            width="stretch"
-        ):
-
-            nome = nome.strip()
-
-            if nome:
-
-                atualizar_nome_acesso(nome)
-
-            st.session_state["initial_completed"] = True
-
-            st.rerun()
-
-
-    # ========================================================
-    # SKIP
-    # ========================================================
-
-    with col2:
-
-        if st.button(
-            "Skip",
-            width="stretch"
-        ):
-
-            st.session_state["initial_completed"] = True
-
-            st.rerun()
+        st.rerun()

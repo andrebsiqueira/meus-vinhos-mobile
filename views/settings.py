@@ -7,7 +7,222 @@ from zoneinfo import ZoneInfo
 
 import sqlite3
 
+from funcoes_acesso import (
+    buscar_acessos,
+    buscar_paginas_acesso
+)
+
 from banco import conectar
+
+# ============================================================
+# ACCESS CONTROL & MAINTENANCE
+# ============================================================
+
+def show_access_control():
+
+    st.markdown(
+        """
+        <div class="secao" style="font-size: 28px;">
+            🔐 Access Control & Maintenance
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    st.markdown("### Access History")
+
+    df_acessos = buscar_acessos()
+
+    if df_acessos is None or df_acessos.empty:
+
+        st.info("No access records found.")
+
+        return
+
+    # ========================================================
+    # SUMMARY
+    # ========================================================
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.metric(
+            "Total Accesses",
+            len(df_acessos)
+        )
+
+    with col2:
+        st.metric(
+            "Named Users",
+            df_acessos["nome"].notna().sum()
+        )
+
+    st.divider()
+
+    # ========================================================
+    # ACCESS HISTORY
+    # ========================================================
+
+    for _, acesso in df_acessos.iterrows():
+
+        nome = acesso["nome"] or "Anonymous"
+        data_hora = acesso["data_hora"]
+
+        with st.expander(
+            f"👤 {nome} • {data_hora}"
+        ):
+
+            col1, col2 = st.columns(2)
+
+            with col1:
+
+                st.write(
+                    f"**Access ID:** {acesso['id']}"
+                )
+
+                st.write(
+                    f"**Name:** {nome}"
+                )
+
+                st.write(
+                    f"**Date / Time:** {data_hora}"
+                )
+
+                st.write(
+                    f"**IP:** {acesso['ip'] or 'Not available'}"
+                )
+
+                st.write(
+                    f"**Country:** {acesso['pais'] or 'Not available'}"
+                )
+
+                st.write(
+                    f"**State:** {acesso['estado'] or 'Not available'}"
+                )
+
+                st.write(
+                    f"**City:** {acesso['cidade'] or 'Not available'}"
+                )
+
+            with col2:
+
+                st.write(
+                    f"**Device:** "
+                    f"{acesso['dispositivo'] or 'Not available'}"
+                )
+
+                st.write(
+                    f"**Operating System:** "
+                    f"{acesso['sistema_operacional'] or 'Not available'}"
+                )
+
+                st.write(
+                    f"**Browser:** "
+                    f"{acesso['navegador'] or 'Not available'}"
+                )
+
+                st.write(
+                    f"**Browser Version:** "
+                    f"{acesso['versao_navegador'] or 'Not available'}"
+                )
+
+                st.write(
+                    f"**Time Zone:** "
+                    f"{acesso['fuso_horario'] or 'Not available'}"
+                )
+
+                st.write(
+                    f"**App Version:** "
+                    f"{acesso['versao_app'] or 'Not available'}"
+                )
+
+            # =================================================
+            # PAGES VISITED
+            # =================================================
+
+            st.markdown("#### Pages Visited")
+
+            df_paginas = buscar_paginas_acesso(
+                acesso["id"]
+            )
+
+            if df_paginas is not None and not df_paginas.empty:
+
+                for _, pagina in df_paginas.iterrows():
+
+                    st.write(
+                        f"• {pagina['pagina']} "
+                        f"— {pagina['data_hora']}"
+                    )
+
+            else:
+
+                st.caption("No pages recorded.")
+
+    # ========================================================
+    # EXPORT
+    # ========================================================
+
+    st.divider()
+
+    st.markdown("### Export Access Data")
+
+    st.caption(
+        "Download the access data to update your local database."
+    )
+
+    # --------------------------------------------------------
+    # ACCESS HISTORY CSV
+    # --------------------------------------------------------
+
+    csv_acessos = df_acessos.to_csv(
+        index=False
+    ).encode("utf-8-sig")
+
+    st.download_button(
+        label="⬇️ Download Access History CSV",
+        data=csv_acessos,
+        file_name="usuario_acessos.csv",
+        mime="text/csv",
+        width="stretch"
+    )
+
+    # --------------------------------------------------------
+    # PAGES VISITED CSV
+    # --------------------------------------------------------
+
+    lista_paginas = []
+
+    for acesso_id in df_acessos["id"]:
+
+        df_paginas = buscar_paginas_acesso(
+            acesso_id
+        )
+
+        if df_paginas is not None and not df_paginas.empty:
+
+            lista_paginas.append(df_paginas)
+
+    if lista_paginas:
+
+        df_todas_paginas = pd.concat(
+            lista_paginas,
+            ignore_index=True
+        )
+
+        csv_paginas = df_todas_paginas.to_csv(
+            index=False
+        ).encode("utf-8-sig")
+
+        st.download_button(
+            label="⬇️ Download Pages Visited CSV",
+            data=csv_paginas,
+            file_name="usuario_acessos_paginas.csv",
+            mime="text/csv",
+            width="stretch"
+        )
 
 def show_settings():
 
@@ -24,7 +239,8 @@ def show_settings():
         "Check Wine Photos in Folder",
         "Register a New Winery with AI Assistance",
         "Register a New Person (Wine Lover)",
-        "Register a New Wine with AI Assistance"
+        "Register a New Wine with AI Assistance",
+        "Access Control & Maintenance"
     ]
 
     selected_option = st.selectbox(
@@ -723,4 +939,7 @@ def show_settings():
 
         st.write()
 
-        
+
+    elif selected_option == "Access Control & Maintenance":
+
+        show_access_control()
