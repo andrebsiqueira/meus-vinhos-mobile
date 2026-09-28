@@ -7,6 +7,4 @@ pillow
 pillow-heif
 rapidocr-onnxruntime
 google-genai
-datetime
-zoneinfo
 sqlite3
