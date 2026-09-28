@@ -183,7 +183,7 @@ def show_access_control():
             st.markdown("#### Pages Visited")
 
             df_paginas = buscar_paginas_acesso(
-                acesso["id"]
+                acesso["sessao_cloud"]
             )
 
             if df_paginas is not None and not df_paginas.empty:
@@ -231,10 +231,10 @@ def show_access_control():
 
     lista_paginas = []
 
-    for acesso_id in df_acessos["id"]:
+    for sessao_cloud in df_acessos["sessao_cloud"]:
 
         df_paginas = buscar_paginas_acesso(
-            acesso_id
+            sessao_cloud
         )
 
         if df_paginas is not None and not df_paginas.empty:
