@@ -253,6 +253,15 @@ def criar_usuario_acesso():
 
 
     conexao.commit()
+
+    print("ACESSO GRAVADO:", acesso_id)
+    
+    resultado = conexao.execute(
+        "SELECT COUNT(*) FROM usuario_acessos"
+    ).fetchone()
+    
+    print("TOTAL DE ACESSOS:", resultado[0])
+    
     conexao.close()
 
 
