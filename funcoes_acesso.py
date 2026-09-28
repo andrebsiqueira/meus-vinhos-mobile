@@ -208,11 +208,6 @@ def criar_usuario_acesso():
     # --------------------------------------------------------
 
     conexao = conectar()
-
-    st.write("BANCO:", conexao.execute(
-        "PRAGMA database_list"
-    ).fetchall())
-
     cursor = conexao.cursor()
 
 
@@ -253,15 +248,6 @@ def criar_usuario_acesso():
 
 
     conexao.commit()
-
-    st.write("ACESSO GRAVADO:", acesso_id)
-    
-    resultado = conexao.execute(
-        "SELECT COUNT(*) FROM usuario_acessos"
-    ).fetchone()
-    
-    st.write("TOTAL DE ACESSOS:", resultado[0])
-    
     conexao.close()
 
 
@@ -284,36 +270,55 @@ def atualizar_nome_acesso(nome):
     acesso_id = st.session_state.get("acesso_id")
 
     if not acesso_id:
-        return False
+        return
 
+    nome = nome.strip()
+
+    if not nome:
+        return
 
     conexao = conectar()
-    cursor = conexao.cursor()
 
-
-    cursor.execute(
+    conexao.execute(
         """
         UPDATE usuario_acessos
         SET nome = ?
         WHERE id = ?
         """,
-        (
-            nome,
-            acesso_id
-        )
+        (nome, acesso_id)
     )
-
 
     conexao.commit()
     conexao.close()
 
-
-    # Guarda também na sessão
     st.session_state["nome_usuario"] = nome
 
+def buscar_nome_acesso():
 
-    return True
+    acesso_id = st.session_state.get("acesso_id")
 
+    if not acesso_id:
+        return None
+
+    conexao = conectar()
+
+    try:
+        resultado = conexao.execute(
+            """
+            SELECT nome
+            FROM usuario_acessos
+            WHERE id = ?
+            """,
+            (acesso_id,)
+        ).fetchone()
+
+        if resultado:
+            return resultado[0]
+
+        return None
+
+    finally:
+        conexao.close()
 
 # ============================================================
 # REGISTRA UMA PÁGINA ACESSADA
@@ -378,11 +383,7 @@ def buscar_acessos():
 
     conexao = conectar()
 
-
-    df = None
-
     try:
-
         import pandas as pd
 
         df = pd.read_sql_query(
@@ -402,17 +403,15 @@ def buscar_acessos():
                 versao_navegador,
                 versao_app
             FROM usuario_acessos
-            ORDER BY data_hora DESC
+            ORDER BY id DESC
             """,
             conexao
         )
 
+        return df
+
     finally:
-
         conexao.close()
-
-
-    return df
 
 
 # ============================================================
@@ -451,3 +450,77 @@ def buscar_paginas_acesso(acesso_id):
 
 
     return df
+
+# ============================================================
+# BUSCA OS ACESSOS
+# ============================================================
+
+def buscar_acessos():
+
+    conexao = conectar()
+
+    try:
+
+        import pandas as pd
+
+        df = pd.read_sql_query(
+            """
+            SELECT
+                id,
+                nome,
+                data_hora,
+                ip,
+                pais,
+                estado,
+                cidade,
+                fuso_horario,
+                dispositivo,
+                sistema_operacional,
+                navegador,
+                versao_navegador,
+                versao_app
+            FROM usuario_acessos
+            ORDER BY data_hora DESC
+            """,
+            conexao
+        )
+
+        return df
+
+    finally:
+
+        conexao.close()
+
+
+# ============================================================
+# BUSCA AS PÁGINAS DE UM ACESSO
+# ============================================================
+
+def buscar_paginas_acesso(acesso_id):
+
+    conexao = conectar()
+
+    try:
+
+        import pandas as pd
+
+        df = pd.read_sql_query(
+            """
+            SELECT
+                id,
+                acesso_id,
+                pagina,
+                data_hora
+            FROM usuario_acessos_paginas
+            WHERE acesso_id = ?
+            ORDER BY data_hora ASC
+            """,
+            conexao,
+            params=(acesso_id,)
+        )
+
+        return df
+
+    finally:
+
+        conexao.close()

@@ -11,7 +11,10 @@ from views.ocr import show_ocr
 from views.chatbot import show_chatbot
 from views.settings import show_settings
 
-from funcoes_acesso import registrar_pagina
+from funcoes_acesso import (
+    registrar_pagina,
+    buscar_nome_acesso
+)
 
 # ============================================================
 # INITIAL
@@ -24,6 +27,21 @@ from funcoes_acesso import registrar_pagina
 if "acesso_id" not in st.session_state:
     show_initial()
     st.stop()
+
+if not st.session_state.get("initial_completed", False):
+    show_initial()
+    st.stop()
+
+# ============================================================
+# RECUPERA O NOME DO USUÁRIO
+# ============================================================
+
+if "nome_usuario" not in st.session_state:
+
+    nome = buscar_nome_acesso()
+
+    if nome:
+        st.session_state["nome_usuario"] = nome
 
 with st.sidebar:
 
