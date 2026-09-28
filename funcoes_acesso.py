@@ -376,6 +376,7 @@ def buscar_acessos():
             """
             SELECT
                 id,
+                sessao_cloud,
                 nome,
                 data_hora,
                 ip,
