@@ -230,7 +230,7 @@ def mostrar_detalhes_vinicola(vinicola_id):
 
     if df_vinhos.empty:
 
-        st.info("No wines from this winery are in your collection yet.")
+        st.info("No wines from this winery are in my collection yet.")
 
     else:
 

@@ -13,7 +13,7 @@ def show_home():
     )
 
     st.info(
-            "A personal catalog to record, organize and rediscover your wines."
+            "A personal catalog to record, organize and rediscover my wines."
         )
 
     conexao = conectar()
