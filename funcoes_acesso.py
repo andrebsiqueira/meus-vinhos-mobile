@@ -390,7 +390,7 @@ def buscar_acessos():
                 versao_navegador,
                 versao_app
             FROM usuario_acessos
-            ORDER BY id DESC
+            ORDER BY datetime(data_hora) DESC
             """,
             conexao
         )
