@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 
 from pathlib import Path
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from banco import conectar
 
@@ -29,192 +31,398 @@ def show_settings():
     if selected_option == "Database Information":
 
         # ==========================================================
-        # DATABASE INFORMATION
+        # WINE DATA
         # ==========================================================
 
         st.markdown(
-            '<div class="secao" style="font-size: 22px; text-align: left;">Database Information</div>',
+            '<div style="font-size: 18px; font-weight: 600; margin-top: 10px;">Wine Data</div>',
             unsafe_allow_html=True
         )
 
-        try:
+        # ----------------------------------------------------------
+        # COUNTS
+        # ----------------------------------------------------------
 
-            conn = conectar()
-            cursor = conn.cursor()
+        conn = conectar()
+        cursor = conn.cursor()
 
-            # ------------------------------------------------------
-            # COLLECTION
-            # ------------------------------------------------------
+        cursor.execute("SELECT COUNT(*) FROM vinhos")
+        total_vinhos = cursor.fetchone()[0]
 
-            cursor.execute("SELECT COUNT(*) FROM vinhos")
-            total_vinhos = cursor.fetchone()[0]
+        cursor.execute("SELECT COUNT(*) FROM vinicolas")
+        total_vinicolas = cursor.fetchone()[0]
 
-            cursor.execute("SELECT COUNT(*) FROM vinicolas")
-            total_vinicolas = cursor.fetchone()[0]
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM vinicolas v
+            LEFT JOIN vinhos w
+                ON w.vinicola_id = v.id
+            WHERE w.id IS NULL
+        """)
 
-            cursor.execute("""
-                SELECT COUNT(DISTINCT regiao)
-                FROM vinicolas
-                WHERE regiao IS NOT NULL
-                AND TRIM(regiao) <> ''
-            """)
-            total_regioes = cursor.fetchone()[0]
+        vinicolas_sem_vinhos = cursor.fetchone()[0]
 
-            cursor.execute("""
-                SELECT COUNT(DISTINCT pais)
-                FROM vinicolas
-                WHERE pais IS NOT NULL
-                AND TRIM(pais) <> ''
-            """)
-            total_paises = cursor.fetchone()[0]
+        cursor.execute("""
+            SELECT COUNT(DISTINCT regiao)
+            FROM vinicolas
+            WHERE regiao IS NOT NULL
+            AND TRIM(regiao) <> ''
+        """)
+        total_regioes = cursor.fetchone()[0]
 
-            cursor.execute("SELECT COUNT(*) FROM pessoas")
-            total_pessoas = cursor.fetchone()[0]
+        cursor.execute("""
+            SELECT COUNT(DISTINCT pais)
+            FROM vinicolas
+            WHERE pais IS NOT NULL
+            AND TRIM(pais) <> ''
+        """)
+        total_paises = cursor.fetchone()[0]
 
-            # ------------------------------------------------------
-            # WINE DATA
-            # ------------------------------------------------------
+        cursor.execute("SELECT COUNT(*) FROM pessoas")
+        total_pessoas = cursor.fetchone()[0]
 
-            cursor.execute("""
-                SELECT COUNT(*)
-                FROM vinhos
-                WHERE foto_arquivo IS NOT NULL
-                AND TRIM(foto_arquivo) <> ''
-            """)
-            vinhos_com_fotos = cursor.fetchone()[0]
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM vinhos
+            WHERE foto_arquivo IS NOT NULL
+            AND TRIM(foto_arquivo) <> ''
+        """)
+        vinhos_com_fotos = cursor.fetchone()[0]
 
-            cursor.execute("""
-                SELECT COUNT(*)
-                FROM vinhos
-                WHERE imagem_garrafa IS NOT NULL
-                AND TRIM(imagem_garrafa) <> ''
-            """)
-            vinhos_com_imagem_garrafa = cursor.fetchone()[0]
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM vinhos
+            WHERE imagem_garrafa IS NOT NULL
+            AND TRIM(imagem_garrafa) <> ''
+        """)
+        vinhos_com_imagem_garrafa = cursor.fetchone()[0]
 
-            cursor.execute("""
-                SELECT COUNT(*)
-                FROM vinhos
-                WHERE data_vinho IS NOT NULL
-                AND TRIM(data_vinho) <> ''
-            """)
-            vinhos_com_data = cursor.fetchone()[0]
+        PASTA_REGION_IMAGES = Path(__file__).resolve().parent.parent / "region_images"
 
-            conn.close()
+        if PASTA_REGION_IMAGES.exists():
+            total_region_images = sum(
+                1 for arquivo in PASTA_REGION_IMAGES.iterdir()
+                if arquivo.is_file()
+            )
+        else:
+            total_region_images = 0
 
-            # ======================================================
-            # COLLECTION
-            # ======================================================
+        conn.close()
 
-            st.markdown(
-                '<div style="font-size: 18px; font-weight: 600; margin-top: 10px;">Collection</div>',
-                unsafe_allow_html=True
+        # ----------------------------------------------------------
+        # ROW 1 - WINES / WINERIES
+        # ----------------------------------------------------------
+
+        st.markdown(
+            f"""
+            <div style="
+                display: flex;
+                width: 100%;
+                gap: 10px;
+                margin-top: 10px;
+                margin-bottom: 10px;
+            ">
+                <div style="
+                    flex: 1;
+                    text-align: center;
+                    padding: 10px 5px;
+                    border: 1px solid rgba(128,128,128,0.25);
+                    border-radius: 8px;
+                ">
+                    <div style="font-size: 14px;">
+                        Wines
+                    </div>
+                    <div style="
+                        font-size: 24px;
+                        font-weight: 600;
+                        margin-top: 4px;
+                    ">
+                        {total_vinhos}
+                    </div>
+                </div>
+                <div style="
+                    flex: 1;
+                    text-align: center;
+                    padding: 10px 5px;
+                    border: 1px solid rgba(128,128,128,0.25);
+                    border-radius: 8px;
+                ">
+                    <div style="font-size: 14px;">
+                        Wine Photos
+                    </div>
+                    <div style="
+                        font-size: 24px;
+                        font-weight: 600;
+                        margin-top: 4px;
+                    ">
+                        {vinhos_com_fotos}
+                    </div>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+        # ----------------------------------------------------------
+        # ROW 2 - REGIONS / COUNTRIES
+        # ----------------------------------------------------------
+
+        st.markdown(
+            f"""
+            <div style="
+                display: flex;
+                width: 100%;
+                gap: 10px;
+                margin-top: 10px;
+                margin-bottom: 10px;
+            ">
+                <div style="
+                    flex: 1;
+                    text-align: center;
+                    padding: 10px 5px;
+                    border: 1px solid rgba(128,128,128,0.25);
+                    border-radius: 8px;
+                ">
+                    <div style="font-size: 14px;">
+                        Wineries
+                    </div>
+                    <div style="
+                        font-size: 24px;
+                        font-weight: 600;
+                        margin-top: 4px;
+                    ">
+                        {total_vinicolas}
+                    </div>
+                </div>
+                <div style="
+                    flex: 1;
+                    text-align: center;
+                    padding: 10px 5px;
+                    border: 1px solid rgba(128,128,128,0.25);
+                    border-radius: 8px;
+                ">
+                    <div style="font-size: 14px;">
+                        Wineries without Wines
+                    </div>
+                    <div style="
+                        font-size: 24px;
+                        font-weight: 600;
+                        margin-top: 4px;
+                    ">
+                        {vinicolas_sem_vinhos}
+                    </div>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+        # ----------------------------------------------------------
+        # ROW 3 - PEOPLE / WINE PHOTOS
+        # ----------------------------------------------------------
+
+        st.markdown(
+            f"""
+            <div style="
+                display: flex;
+                width: 100%;
+                gap: 10px;
+                margin-top: 10px;
+                margin-bottom: 10px;
+            ">
+                <div style="
+                    flex: 1;
+                    text-align: center;
+                    padding: 10px 5px;
+                    border: 1px solid rgba(128,128,128,0.25);
+                    border-radius: 8px;
+                ">
+                    <div style="font-size: 14px;">
+                        Regions
+                    </div>
+                    <div style="
+                        font-size: 24px;
+                        font-weight: 600;
+                        margin-top: 4px;
+                    ">
+                        {total_regioes}
+                    </div>
+                </div>
+                <div style="
+                    flex: 1;
+                    text-align: center;
+                    padding: 10px 5px;
+                    border: 1px solid rgba(128,128,128,0.25);
+                    border-radius: 8px;
+                ">
+                    <div style="font-size: 14px;">
+                        Region Images
+                    </div>
+                    <div style="
+                        font-size: 24px;
+                        font-weight: 600;
+                        margin-top: 4px;
+                    ">
+                        {total_region_images}
+                    </div>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+        # ----------------------------------------------------------
+        # ROW 4 - BOTTLE IMAGES / TASTING DATES
+        # ----------------------------------------------------------
+
+        st.markdown(
+            f"""
+            <div style="
+                display: flex;
+                width: 100%;
+                gap: 10px;
+                margin-top: 10px;
+                margin-bottom: 10px;
+            ">
+                <div style="
+                    flex: 1;
+                    text-align: center;
+                    padding: 10px 5px;
+                    border: 1px solid rgba(128,128,128,0.25);
+                    border-radius: 8px;
+                ">
+                    <div style="font-size: 14px;">
+                        Bottle Images
+                    </div>
+                    <div style="
+                        font-size: 24px;
+                        font-weight: 600;
+                        margin-top: 4px;
+                    ">
+                        {vinhos_com_imagem_garrafa}
+                    </div>
+                </div>
+                <div style="
+                    flex: 1;
+                    text-align: center;
+                    padding: 10px 5px;
+                    border: 1px solid rgba(128,128,128,0.25);
+                    border-radius: 8px;
+                ">
+                    <div style="font-size: 14px;">
+                        People
+                    </div>
+                    <div style="
+                        font-size: 24px;
+                        font-weight: 600;
+                        margin-top: 4px;
+                    ">
+                        {total_pessoas}
+                    </div>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        # ==========================================================
+        # DATABASE
+        # ==========================================================
+
+        st.markdown(
+            '<div style="font-size: 18px; font-weight: 600; margin-top: 25px;">Database</div>',
+            unsafe_allow_html=True
+        )
+
+        st.markdown(
+            '<div style="'
+            'border-bottom: 1px solid rgba(128,128,128,0.20);'
+            'margin-top: 5px;'
+            'margin-bottom: 15px;'
+            '"></div>',
+            unsafe_allow_html=True
+        )
+
+        # Database file
+        db_path = Path(__file__).resolve().parent.parent / "vinhos.db"
+
+        if db_path.exists():
+
+            # Database size
+            tamanho_mb = db_path.stat().st_size / (1024 * 1024)
+
+            # Last updated - Brasília time
+            ultima_atualizacao = datetime.fromtimestamp(
+                db_path.stat().st_mtime,
+                tz=ZoneInfo("America/Sao_Paulo")
+            )
+
+            ultima_atualizacao_formatada = ultima_atualizacao.strftime(
+                "%d/%m/%Y %H:%M"
             )
 
             st.markdown(
-                '<div style="'
-                'border-bottom: 1px solid rgba(128,128,128,0.20);'
-                'margin-top: 5px;'
-                'margin-bottom: 15px;'
-                '"></div>',
+                f"""
+                <div style="
+                    width: 100%;
+                    padding: 10px 5px;
+                ">
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        margin-bottom: 8px;
+                    ">
+                        <span style="font-size: 14px;">
+                            Database file
+                        </span>
+                        <span style="
+                            font-size: 14px;
+                            font-weight: 600;
+                        ">
+                            {db_path.name}
+                        </span>
+                    </div>
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        margin-bottom: 8px;
+                    ">
+                        <span style="font-size: 14px;">
+                            Database size
+                        </span>
+                        <span style="
+                            font-size: 14px;
+                            font-weight: 600;
+                        ">
+                            {tamanho_mb:.2f} MB
+                        </span>
+                    </div>
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                    ">
+                        <span style="font-size: 14px;">
+                            Last updated
+                        </span>
+                        <span style="
+                            font-size: 14px;
+                            font-weight: 600;
+                        ">
+                            {ultima_atualizacao_formatada}
+                        </span>
+                    </div>
+
+                </div>
+                """,
                 unsafe_allow_html=True
             )
 
-            col1, col2 = st.columns(2)
+        else:
 
-            with col1:
-                st.metric("Wines", total_vinhos)
-
-            with col2:
-                st.metric("Wineries", total_vinicolas)
-
-            col1, col2 = st.columns(2)
-
-            with col1:
-                st.metric("Regions", total_regioes)
-
-            with col2:
-                st.metric("Countries", total_paises)
-
-            col1, col2 = st.columns(2)
-
-            with col1:
-                st.metric("People", total_pessoas)
-
-            # ======================================================
-            # WINE DATA
-            # ======================================================
-
-            st.markdown(
-                '<div style="font-size: 18px; font-weight: 600; margin-top: 25px;">Wine Data</div>',
-                unsafe_allow_html=True
-            )
-
-            st.markdown(
-                '<div style="'
-                'border-bottom: 1px solid rgba(128,128,128,0.20);'
-                'margin-top: 5px;'
-                'margin-bottom: 15px;'
-                '"></div>',
-                unsafe_allow_html=True
-            )
-
-            col1, col2 = st.columns(2)
-
-            with col1:
-                st.metric("Wines with photos", vinhos_com_fotos)
-
-            with col2:
-                st.metric("Bottle images", vinhos_com_imagem_garrafa)
-
-            col1, col2 = st.columns(2)
-
-            with col1:
-                st.metric("Tasting dates", vinhos_com_data)
-
-            # ======================================================
-            # DATABASE FILE
-            # ======================================================
-
-            st.markdown(
-                '<div style="font-size: 18px; font-weight: 600; margin-top: 25px;">Database</div>',
-                unsafe_allow_html=True
-            )
-
-            st.markdown(
-                '<div style="'
-                'border-bottom: 1px solid rgba(128,128,128,0.20);'
-                'margin-top: 5px;'
-                'margin-bottom: 15px;'
-                '"></div>',
-                unsafe_allow_html=True
-            )
-
-            # settings.py está dentro da pasta pages
-            db_path = Path(__file__).resolve().parent.parent / "vinhos.db"
-
-            if db_path.exists():
-
-                tamanho_mb = db_path.stat().st_size / (1024 * 1024)
-
-                data_atualizacao = db_path.stat().st_mtime
-
-                from datetime import datetime
-
-                ultima_atualizacao = datetime.fromtimestamp(
-                    data_atualizacao
-                ).strftime("%d/%m/%Y %H:%M")
-
-                st.write(f"**Database file:** {db_path.name}")
-                st.write(f"**Database size:** {tamanho_mb:.2f} MB")
-                st.write(f"**Last updated:** {ultima_atualizacao}")
-
-            else:
-
-                st.warning("Database file not found.")
-
-        except Exception as e:
-
-            st.error(f"Unable to load database information: {e}")
+            st.warning("Database file not found.")
 
     elif selected_option == "Check Wine Photos in Folder":
 
@@ -229,7 +437,6 @@ def show_settings():
                 return None
 
             return Path(str(caminho)).name.strip().lower()
-
 
         try:
 
