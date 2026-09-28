@@ -1,6 +1,7 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
 
+from views.initial import show_initial
 from views.home import show_home
 from views.my_wines import show_my_wines
 from views.wineries import show_wineries
@@ -9,6 +10,20 @@ from views.people import show_people
 from views.ocr import show_ocr
 from views.chatbot import show_chatbot
 from views.settings import show_settings
+
+from funcoes_acesso import registrar_pagina
+
+# ============================================================
+# INITIAL
+# ============================================================
+
+# Cria o registro do acesso somente uma vez por sessão.
+# O próprio initial.py cria o acesso e guarda o ID
+# em st.session_state["acesso_id"].
+
+if "acesso_id" not in st.session_state:
+    show_initial()
+    st.stop()
 
 with st.sidebar:
 
@@ -38,28 +53,53 @@ with st.sidebar:
         default_index=0
     )
 
-#st.write("You selected:", selected)
+# ============================================================
+# PÁGINAS
+# ============================================================
 
 if selected == "Home":
+
+    registrar_pagina("Home")
     show_home()
 
+
 elif selected == "My Wines":
+
+    registrar_pagina("My Wines")
     show_my_wines()
 
+
 elif selected == "Wineries":
+
+    registrar_pagina("Wineries")
     show_wineries()
 
+
 elif selected == "Regions":
+
+    registrar_pagina("Regions")
     show_regions()
 
+
 elif selected == "People":
+
+    registrar_pagina("People")
     show_people()
 
+
 elif selected == "OCR":
+
+    registrar_pagina("OCR")
     show_ocr()
 
+
 elif selected == "AI Chatbot":
+
+    registrar_pagina("AI Chatbot")
     show_chatbot()
 
+
 elif selected == "Settings":
+
+    registrar_pagina("Settings")
     show_settings()
