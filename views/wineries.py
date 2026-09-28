@@ -89,7 +89,7 @@ def mostrar_detalhes_vinicola(vinicola_id):
     st.markdown(
         f"""
         <div class="secao" style="font-size: 28px;">
-            🏛️ {vinicola["nome"]}
+            {vinicola["nome"]}
         </div>
         """,
         unsafe_allow_html=True
@@ -284,7 +284,7 @@ def mostrar_detalhes_vinicola(vinicola_id):
 def show_wineries():
 
     st.markdown(
-        '<div class="secao" style="font-size: 28px;">🍷 Wineries & Producers</div>',
+        '<div class="secao" style="font-size: 28px;">🏛️ Wineries & Producers</div>',
         unsafe_allow_html=True
     )
 

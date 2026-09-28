@@ -4,7 +4,7 @@ from google import genai
 def show_chatbot():
 
     st.markdown(
-        '<div class="secao" style="font-size: 28px;">🍷 AI Chatbot</div>',
+        '<div class="secao" style="font-size: 28px;">🤖 AI Chatbot</div>',
         unsafe_allow_html=True
     )
 

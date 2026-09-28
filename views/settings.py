@@ -12,7 +12,7 @@ from banco import conectar
 def show_settings():
 
     st.markdown(
-        '<div class="secao" style="font-size: 28px;">🍷 Settings</div>',
+        '<div class="secao" style="font-size: 28px;">💻 Settings</div>',
         unsafe_allow_html=True
     )
 
@@ -22,7 +22,9 @@ def show_settings():
         " ",
         "Database Information",
         "Check Wine Photos in Folder",
-        "Register a New Winery with AI Assistance"
+        "Register a New Winery with AI Assistance",
+        "Register a New Person (Wine Lover)",
+        "Register a New Wine with AI Assistance"
     ]
 
     selected_option = st.selectbox(
@@ -562,26 +564,79 @@ def show_settings():
 
                     fotos_faltando.append(registro)
 
-            # ------------------------------------------------------
+            # ==========================================================
+            # PERCENTAGES
+            # ==========================================================
+
+            total_fotos_banco = len(fotos_banco)
+
+            total_fotos_encontradas = total_fotos_banco - len(fotos_faltando)
+
+            percent_files_in_folder = (
+                (total_fotos_encontradas / total_fotos_banco) * 100
+                if total_fotos_banco > 0
+                else 0
+            )
+
+            percent_files_in_folder_text = (
+                f"{percent_files_in_folder:.1f}".replace(".", ",")
+            )
+
+            # ----------------------------------------------------------
             # RESULTADOS
-            # ------------------------------------------------------
+            # ----------------------------------------------------------
 
-            col1, col2, col3 = st.columns(3)
+            st.markdown(
+                f"""
+                <div style="
+                    display: flex;
+                    width: 100%;
+                    gap: 10px;
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+                ">
+                    <div style="
+                        flex: 1;
+                        text-align: center;
+                        padding: 10px 5px;
+                        border: 1px solid rgba(128,128,128,0.25);
+                        border-radius: 8px;
+                    ">
+                        <div style="font-size: 14px;">
+                            Photos in database
+                        </div>
+                        <div style="
+                            font-size: 24px;
+                            font-weight: 600;
+                            margin-top: 4px;
+                        ">
+                            {len(fotos_banco)}
+                        </div>
+                    </div>
+                    <div style="
+                        flex: 1;
+                        text-align: center;
+                        padding: 10px 5px;
+                        border: 1px solid rgba(128,128,128,0.25);
+                        border-radius: 8px;
+                    ">
+                        <div style="font-size: 14px;">
+                            Files in wine_photos
+                        </div>
+                        <div style="
+                            font-size: 24px;
+                            font-weight: 600;
+                            margin-top: 4px;
+                        ">
+                            {len(arquivos_pasta)} ({percent_files_in_folder_text}%)
+                        </div>
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
-            with col1:
-                st.metric(
-                    "Photos in database",
-                    len(fotos_banco)
-                )
-
-            with col2:
-                st.metric(
-                    "Files in wine_photos",
-                    len(arquivos_pasta)
-                )
-
-            with col3:
-                st.metric(
+            st.metric(
                     "Missing files",
                     len(fotos_faltando)
                 )
@@ -651,3 +706,21 @@ def show_settings():
         # ==========================================================
 
         st.write()
+
+    elif selected_option == "Register a New Person (Wine Lover)":
+
+        # ==========================================================
+        # REGISTER A NEW PERSON
+        # ==========================================================
+
+        st.write()
+
+    elif selected_option == "Register a New Wine with AI Assistance":
+
+        # ==========================================================
+        # REGISTER A NEW WINE
+        # ==========================================================
+
+        st.write()
+
+        
