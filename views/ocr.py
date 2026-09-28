@@ -11,5 +11,5 @@ def show_ocr():
     )
 
     st.info(
-            "File reading with Optical Character Recognition (OCR)"
+            "File reading with Optical Character Recognition (OCR)."
         )
