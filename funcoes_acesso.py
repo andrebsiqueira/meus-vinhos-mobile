@@ -1,7 +1,8 @@
 import streamlit as st
 import requests
 
-from datetime import datetime, timezone
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from banco import conectar
 
@@ -341,10 +342,11 @@ def registrar_pagina(pagina):
         return
 
 
-    data_hora = datetime.now(timezone.utc).strftime(
+    data_hora = datetime.now(
+        ZoneInfo("America/Sao_Paulo")
+    ).strftime(
         "%Y-%m-%d %H:%M:%S"
     )
-
 
     conexao = conectar()
     cursor = conexao.cursor()
