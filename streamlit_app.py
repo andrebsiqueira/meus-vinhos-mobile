@@ -19,12 +19,11 @@ from funcoes_acesso import (
 # ============================================================
 # INITIAL
 # ============================================================
-
 # Cria o registro do acesso somente uma vez por sessão.
-# O próprio initial.py cria o acesso e guarda o ID
-# em st.session_state["acesso_id"].
+# O initial.py cria o acesso e guarda
+# a sessão em st.session_state["sessao_cloud"].
 
-if "acesso_id" not in st.session_state:
+if "sessao_cloud" not in st.session_state:
     show_initial()
     st.stop()
 
