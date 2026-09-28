@@ -33,6 +33,121 @@ if not st.session_state.get("initial_completed", False):
     st.stop()
 
 # ============================================================
+# CONFIGURAÇÃO DA PÁGINA
+# ============================================================
+
+st.set_page_config(
+    page_title="Meus Vinhos Mobile APP",
+    page_icon="🍷",
+    layout="wide"
+)
+
+# ============================================================
+# CSS GLOBAL
+# ============================================================
+
+st.markdown("""
+<style>
+    .block-container {
+        padding-top: 2rem;
+        padding-left: 4rem;
+        padding-right: 4rem;
+    }
+
+    .titulo {
+        font-size: 35px;
+        font-weight: 600;
+        letter-spacing: -1px;
+        margin-bottom: 0;
+    }
+
+    .subtitulo {
+        font-size: 18px;
+        margin-bottom: 5px;
+        opacity: 0.65;
+    }
+
+    .secao {
+        font-size: 28px;
+        font-weight: 600;
+        margin-top: 35px;
+        margin-bottom: 20px;
+    }
+
+    .card {
+        border: 1px solid rgba(128,128,128,0.25);
+        border-radius: 16px;
+        padding: 22px;
+        margin-bottom: 20px;
+        overflow: hidden;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        height: 520px;
+        background-color: #F5E6E8;
+    }
+
+    .card-texto {
+        font-size: 15px;
+    }
+
+    .card-texto-obs {
+        font-size: 14px;
+        background-color: #F5F5F5;
+    }
+
+    .card-texto-bold {
+        font-size: 18px;
+        font-weight: 600;
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-titulo {
+        font-size: 21px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .card-info {
+        font-size: 15px;
+        opacity: 0.7;
+        margin-bottom: 5px;
+    }
+
+    .nota {
+        font-size: 18px;
+        margin-top: 15px;
+    }
+
+    .hero {
+        border-radius: 20px;
+        padding: 25px;
+        margin-bottom: 40px;
+        background: linear-gradient(
+            135deg,
+            rgba(120,80,50,0.18),
+            rgba(180,150,100,0.08)
+        );
+    }
+
+    .hero-titulo {
+        font-size: 36px;
+        font-weight: 600;
+    }
+
+    .hero-texto {
+        font-size: 18px;
+        opacity: 0.7;
+    }
+
+    div[data-testid="stMetric"] {
+        border: 1px solid rgba(128,128,128,0.2);
+        padding: 20px;
+        border-radius: 14px;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# ============================================================
 # RECUPERA O NOME DO USUÁRIO
 # ============================================================
 
