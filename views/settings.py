@@ -45,25 +45,61 @@ def show_access_control():
     # SUMMARY
     # ========================================================
 
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.metric(
-            "Total Accesses",
-            len(df_acessos)
+    st.markdown(
+            f"""
+            <div style="
+                display: flex;
+                width: 100%;
+                gap: 10px;
+                margin-top: 10px;
+                margin-bottom: 10px;
+            ">
+                <div style="
+                    flex: 1;
+                    text-align: center;
+                    padding: 10px 5px;
+                    border: 1px solid rgba(128,128,128,0.25);
+                    border-radius: 8px;
+                ">
+                    <div style="font-size: 14px;">
+                        Total Accesses
+                    </div>
+                    <div style="
+                        font-size: 24px;
+                        font-weight: 600;
+                        margin-top: 4px;
+                    ">
+                        {len(df_acessos)}
+                    </div>
+                </div>
+                <div style="
+                    flex: 1;
+                    text-align: center;
+                    padding: 10px 5px;
+                    border: 1px solid rgba(128,128,128,0.25);
+                    border-radius: 8px;
+                ">
+                    <div style="font-size: 14px;">
+                        Named Users
+                    </div>
+                    <div style="
+                        font-size: 24px;
+                        font-weight: 600;
+                        margin-top: 4px;
+                    ">
+                        {df_acessos["nome"].notna().sum()}
+                    </div>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
-
-    with col2:
-        st.metric(
-            "Named Users",
-            df_acessos["nome"].notna().sum()
-        )
-
-    st.divider()
 
     # ========================================================
     # ACCESS HISTORY
     # ========================================================
+
+    st.markdown("### Access Log")
 
     for _, acesso in df_acessos.iterrows():
 
@@ -164,8 +200,6 @@ def show_access_control():
     # ========================================================
     # EXPORT
     # ========================================================
-
-    st.divider()
 
     st.markdown("### Export Access Data")
 
