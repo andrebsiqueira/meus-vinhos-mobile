@@ -7,6 +7,7 @@ from views.my_wines import show_my_wines
 from views.wineries import show_wineries
 from views.regions import show_regions
 from views.people import show_people
+from views.tasting_notes import show_tasting_notes
 from views.ocr import show_ocr
 from views.chatbot import show_chatbot
 from views.settings import show_settings
@@ -167,6 +168,7 @@ with st.sidebar:
             "Wineries",
             "Regions",
             "People",
+            "Tasting Notes",
             "OCR",
             "AI Chatbot",
             "Settings"
@@ -177,6 +179,7 @@ with st.sidebar:
             "building",
             "globe",
             "people",
+            "journal-richtext",
             "search",
             "robot",
             "gear"
@@ -218,6 +221,10 @@ elif selected == "People":
     registrar_pagina("People")
     show_people()
 
+elif selected == "Tasting Notes":
+
+    registrar_pagina("Tasting Notes")
+    show_tasting_notes()
 
 elif selected == "OCR":
 
