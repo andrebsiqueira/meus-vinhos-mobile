@@ -10,6 +10,7 @@ from views.people import show_people
 from views.tasting_notes import show_tasting_notes
 from views.ocr import show_ocr
 from views.chatbot import show_chatbot
+from views.lab import show_lab
 from views.settings import show_settings
 
 from funcoes_acesso import (
@@ -171,6 +172,7 @@ with st.sidebar:
             "Tasting Notes",
             "OCR",
             "AI Chatbot",
+            "LAB",
             "Settings"
         ],
         icons=[
@@ -182,6 +184,7 @@ with st.sidebar:
             "journal-richtext",
             "search",
             "robot",
+            "lightbulb",
             "gear"
         ],
         menu_icon="wine",
@@ -197,24 +200,20 @@ if selected == "Home":
     registrar_pagina("Home")
     show_home()
 
-
 elif selected == "My Wines":
 
     registrar_pagina("My Wines")
     show_my_wines()
-
 
 elif selected == "Wineries":
 
     registrar_pagina("Wineries")
     show_wineries()
 
-
 elif selected == "Regions":
 
     registrar_pagina("Regions")
     show_regions()
-
 
 elif selected == "People":
 
@@ -230,12 +229,16 @@ elif selected == "OCR":
 
     registrar_pagina("OCR")
     show_ocr()
-
-
+    
 elif selected == "AI Chatbot":
 
     registrar_pagina("AI Chatbot")
     show_chatbot()
+
+elif selected == "LAB":
+
+    registrar_pagina("LAB")
+    show_lab()
 
 
 elif selected == "Settings":
