@@ -672,24 +672,24 @@ def show_wineries():
             # CSS customizado para o botão "Ver vinícola"
             st.markdown("""
             <style>
-                /* Estiliza o botão dentro do card */
-                div[data-testid="stVerticalBlock"] div.stButton > button {
-                    background-color: #6A1B29 !important; /* Cor de fundo (ex: bordô) */
-                    color: #ffffff !important;           /* Cor do texto (branco) */
-                    border: none !important;             /* Remove a borda padrão */
-                    border-radius: 8px !important;       /* Cantos arredondados */
-                    font-weight: 500 !important;
-                    font-size: 14px !important;
-                    padding: 6px 12px !important;
-                    transition: opacity 0.2s ease, transform 0.1s ease;
-                }
-
-                /* Efeito ao passar o mouse ou tocar */
-                div[data-testid="stVerticalBlock"] div.stButton > button:hover,
-                div[data-testid="stVerticalBlock"] div.stButton > button:active {
-                    opacity: 0.9 !important;
-                    transform: scale(0.99);
-                }
+            /* Botão Explorar Vinícola */
+            div.stButton > button {
+                background-color: #6A1B29 !important;
+                color: white !important;
+                border: none !important;
+                border-radius: 8px !important;
+                padding: 4px 8px !important;
+            }
+            /* Texto dentro do botão */
+            div.stButton > button p {
+                font-size: 14px !important;
+                font-weight: 500 !important;
+                margin: 0 !important;
+            }
+            /* Hover */
+            div.stButton > button:hover {
+                opacity: 0.9 !important;
+            }
             </style>
             """, unsafe_allow_html=True)
             
