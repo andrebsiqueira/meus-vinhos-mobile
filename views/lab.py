@@ -231,3 +231,55 @@ def show_lab():
         if st.button("Explore Winery ›", key=f"btn_vinicola_33", use_container_width=True):
             st.session_state["vinicola_selecionada"] = 33
             st.rerun()
+
+
+    base_dir = Path(__file__).resolve().parent.parent
+    caminho_imagem = base_dir / "region_images" / "mendoza.jpg"
+
+    with open(caminho_imagem, "rb") as f:
+        encoded = base64.b64encode(f.read()).decode("utf-8")
+
+
+    # Puxa a tag da bandeira em PNG (usando a função de base64 criada)
+    bandeira_html = get_flag_png("AR", width=18)
+
+    st.markdown(
+        f"""
+        <div style="
+            position: relative;
+            height: 180px;
+            border-radius: 12px;
+            overflow: hidden;
+            background-image: url('data:image/png;base64,{encoded}');
+            background-size: cover;
+            background-position: center;
+        ">
+            <div style="
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                padding: 30px 16px 14px 16px;
+                background: linear-gradient(
+                    transparent,
+                    rgba(0,0,0,0.75)
+                );
+                color: white;
+            ">
+                <div style="
+                    font-size: 20px;
+                    font-weight: 600;
+                ">
+                    Catena Zapata
+                </div>
+                <div style="
+                    font-size: 15px;
+                    margin-top: 4px;
+                ">
+                    {bandeira_html} Argentina • Mendoza
+                </div>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
