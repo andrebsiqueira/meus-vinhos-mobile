@@ -146,7 +146,7 @@ def show_lab():
         """, unsafe_allow_html=True)
         
         # Botão de ação direta dentro do card
-        if st.button("Ver vinícola ›", key=f"btn_vinicola_32", use_container_width=True):
+        if st.button("Explore Winery ›", key=f"btn_vinicola_32", use_container_width=True):
             st.session_state["vinicola_selecionada"] = 32
             st.rerun()
 
@@ -212,6 +212,6 @@ def show_lab():
         """, unsafe_allow_html=True)
         
         # Botão de ação direta dentro do card
-        if st.button("Ver vinícola ›", key=f"btn_vinicola_33", use_container_width=True):
+        if st.button("Explore Winery ›", key=f"btn_vinicola_33", use_container_width=True):
             st.session_state["vinicola_selecionada"] = 33
             st.rerun()
