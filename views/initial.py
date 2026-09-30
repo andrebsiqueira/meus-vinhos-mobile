@@ -10,6 +10,22 @@ from funcoes_acesso import (
 
 def show_initial():
 
+    # CSS para cultar o header
+    st.markdown(
+        """
+        <style>
+        /* 1. Ocultar cabeçalho do Streamlit (Share, GitHub, etc.) */
+        header[data-testid="stHeader"] {
+            display: none !important;
+        }
+        .block-container {
+            padding-top: 1.5rem !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
     VERSAO_APP = st.session_state.get("versao_app", "Not available")
 
     criar_usuario_acesso()
@@ -112,18 +128,10 @@ def show_initial():
         unsafe_allow_html=True,
     )
 
-    # CSS para criar o card de validação, botão com destaque e ocultar o header
+    # CSS para criar o card de validação
     st.markdown(
         """
         <style>
-        /* 1. Ocultar cabeçalho do Streamlit (Share, GitHub, etc.) */
-        header[data-testid="stHeader"] {
-            display: none !important;
-        }
-        .block-container {
-            padding-top: 1.5rem !important;
-        }
-
         /* 2. Fundo e moldura para o bloco de validação */
         .auth-card {
             background: rgba(255, 255, 255, 0.90);
