@@ -1,5 +1,6 @@
 import streamlit as st
 
+from pathlib import Path
 import base64
 
 from funcoes_acesso import (
@@ -11,12 +12,15 @@ def show_initial():
 
     criar_usuario_acesso()
 
+    caminho_imagem = (
+        Path(__file__).resolve().parent.parent
+        / "images"
+        / "logo_initial.jpg"
+    )
+
     def get_base64_image(image_path):
         with open(image_path, "rb") as img_file:
             return base64.b64encode(img_file.read()).decode()
-
-    # Caminho do seu arquivo local
-    caminho_imagem = "C:/Trabalho/Python/Mobile/images/logo_initial.jpg"
 
     try:
         img_b64 = get_base64_image(caminho_imagem)
