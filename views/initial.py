@@ -10,6 +10,8 @@ from funcoes_acesso import (
 
 def show_initial():
 
+    VERSAO_APP = st.session_state.get("versao_app", "Not available")
+
     criar_usuario_acesso()
 
     caminho_imagem = (
@@ -67,7 +69,7 @@ def show_initial():
     )
 
     st.markdown(
-        """
+        f"""
         <div style="
             background: rgba(255, 255, 255, 0.88);
             backdrop-filter: blur(12px);
@@ -103,7 +105,7 @@ def show_initial():
                 margin: 0;
                 font-weight: 500;
             ">
-                Versão Mobile 1.0.1<br>Desenvolvido por André Siqueira
+                Versão Mobile {VERSAO_APP}<br>Desenvolvido por André Siqueira
             </p>
         </div>
         """,
