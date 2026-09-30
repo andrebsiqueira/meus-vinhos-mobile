@@ -2,6 +2,7 @@ import streamlit as st
 
 from pathlib import Path
 import base64
+import time
 
 from funcoes_acesso import (
     criar_usuario_acesso,
@@ -59,6 +60,8 @@ def show_initial():
         )
     except FileNotFoundError:
         st.error(f"Imagem não encontrada no caminho: {caminho_imagem}")
+
+    time.sleep(2)
 
     # CSS para transformar o st.container(border=True) no card estilizado
     st.markdown(
