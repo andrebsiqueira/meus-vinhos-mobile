@@ -8,18 +8,17 @@ from banco import conectar
 
 import uuid
 
-# ============================================================
-# CONFIGURAÇÕES
-# ============================================================
-
-VERSAO_APP = "1.0.0"
-
 
 # ============================================================
 # COLETA DOS DADOS DO ACESSO
 # ============================================================
 
 def obter_dados_acesso():
+
+    VERSAO_APP = st.session_state.get(
+        "versao_app",
+        "Not available"
+    )
 
     dados = {
         "data_hora": datetime.now(
