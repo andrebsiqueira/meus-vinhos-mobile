@@ -13,6 +13,14 @@ from views.chatbot import show_chatbot
 from views.lab import show_lab
 from views.settings import show_settings
 
+# ============================================================
+# APP CONFIGURATION
+# ============================================================
+
+if "versao_app" not in st.session_state:
+    st.session_state["versao_app"] = "1.0.1"
+
+
 from funcoes_acesso import (
     registrar_pagina,
     buscar_nome_acesso
@@ -23,7 +31,7 @@ from funcoes_acesso import (
 # ============================================================
 
 st.set_page_config(
-    page_title="Meus Vinhos Mobile APP",
+    page_title="Meus Vinhos App",
     page_icon="🍷",
     layout="wide"
 )
