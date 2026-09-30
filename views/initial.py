@@ -63,7 +63,7 @@ def show_initial():
 
     # Executa somente uma vez por sessão
     if "initial_sleep_done" not in st.session_state:
-        time.sleep(2)
+        time.sleep(3)
         st.session_state["initial_sleep_done"] = True
 
     # CSS para transformar o st.container(border=True) no card estilizado
