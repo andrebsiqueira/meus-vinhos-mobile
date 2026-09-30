@@ -3,6 +3,50 @@ import pandas as pd
 
 from banco import conectar
 
+import base64
+from pathlib import Path
+
+@st.cache_data
+def obter_bandeira_png(country_code, width=20):
+    """
+    Busca o arquivo .png na pasta flag_images, converte para Base64
+    e retorna a tag HTML <img> pronta.
+    """
+
+    # Não existe código de país
+    if pd.isna(country_code):
+        return ""
+
+    # Converte para texto e remove espaços
+    country_code = str(country_code).strip()
+
+    # Código vazio
+    if not country_code:
+        return ""
+
+    base_dir = Path(__file__).resolve().parent.parent
+
+    file_path = (
+        base_dir
+        / "flag_images"
+        / f"{country_code.lower()}.png"
+    )
+
+    if not file_path.exists():
+        return ""
+
+    with open(file_path, "rb") as f:
+        data = f.read()
+
+    encoded = base64.b64encode(data).decode("utf-8")
+
+    return (
+        f'<img src="data:image/png;base64,{encoded}" '
+        f'width="{width}" '
+        f'style="vertical-align: middle; '
+        f'border-radius: 2px; margin-right: 6px;">'
+    )
+
 def mostrar_detalhes_vinicola(vinicola_id):
 
     st.markdown(
@@ -39,6 +83,7 @@ def mostrar_detalhes_vinicola(vinicola_id):
             v.instagram,
             v.visitada,
             v.descricao,
+            v.bandeira,
             COUNT(DISTINCT vi.id) AS quantidade_vinhos
         FROM vinicolas v
         LEFT JOIN vinhos vi
@@ -54,7 +99,8 @@ def mostrar_detalhes_vinicola(vinicola_id):
             v.site,
             v.instagram,
             v.visitada,
-            v.descricao
+            v.descricao,
+            v.bandeira
         """,
         conexao,
         params=(vinicola_id,)
@@ -85,15 +131,6 @@ def mostrar_detalhes_vinicola(vinicola_id):
         st.rerun()
 
     vinicola = df.iloc[0]
-
-    #st.markdown(
-    #    f"""
-    #    <div class="secao" style="font-size: 28px;">
-    #        {vinicola["nome"]}
-    #    </div>
-    #    """,
-    #    unsafe_allow_html=True
-    #)
 
     st.markdown(f'### {vinicola["nome"]}')
 
@@ -286,11 +323,9 @@ def mostrar_detalhes_vinicola(vinicola_id):
 def show_wineries():
 
     st.markdown(
-        '<div class="secao" style="font-size: 28px;">🏛️ Wineries & Producers</div>',
-        unsafe_allow_html=True
-    )
-
-    #st.markdown("<br>", unsafe_allow_html=True)
+            '<div class="secao" style="font-size: 28px;">Vinícolas & Produtores</div>',
+            unsafe_allow_html=True
+        )
 
     vinicola_selecionada = st.session_state.get("vinicola_selecionada")
 
@@ -337,13 +372,36 @@ def show_wineries():
 
     conexao = conectar()
 
-    # =========================================================
-    # VINÍCOLAS DE UMA REGIÃO ESPECÍFICA
-    # =========================================================
+    pesquisa_vinicola = st.text_input(
+            "🔎 Pesquisar Vinícolas",
+            placeholder="Digite o nome da vinícola, produtor, região, país..."
+        )
 
-    if regiao_selecionada:
+    opcoes_filtro = [
+            "Todas",
+            "Brasil",
+            "Portugal",
+            "Argentina",
+            "Chile",
+            "✔️ Visitadas"
+        ]
 
-        df_vinicolas = pd.read_sql_query(
+    opcoes_filtro_selecionado = st.pills(
+            label="Filtro de opções",
+            options=opcoes_filtro,
+            default="Todas",
+            selection_mode="single",
+            label_visibility="collapsed"
+        )
+
+    # Feedback visual do que foi selecionado
+    st.caption(f"Filtro ativo: **{opcoes_filtro_selecionado}**")
+
+    # =====================================================
+    # CARREGA TODAS AS VINÍCOLAS
+    # =====================================================
+
+    df_vinicolas = pd.read_sql_query(
             """
             SELECT
                 v.id AS vinicola_id,
@@ -353,66 +411,8 @@ def show_wineries():
                 v.pais,
                 v.visitada,
                 COUNT(DISTINCT vi.id) AS quantidade_vinhos,
-                v.instagram
-            FROM vinicolas v
-            LEFT JOIN vinhos vi
-                ON v.id = vi.vinicola_id
-            WHERE v.regiao = ?
-            GROUP BY
-                v.id,
-                v.nome,
-                v.regiao,
-                v.subregiao,
-                v.pais,
-                v.visitada,
-                v.instagram
-            ORDER BY v.nome ASC
-            """,
-            conexao,
-            params=(regiao_selecionada,)
-        )
-
-        if not df_vinicolas.empty:
-
-            pais = df_vinicolas.iloc[0]["pais"]
-
-            if pd.isna(pais) or str(pais).strip() == "":
-                pais = "País não informado"
-
-            st.markdown(
-                f"### 🌎 {regiao_selecionada}, {pais}"
-            )
-
-            st.info(
-                "Exploring wineries from this region only."
-            )
-
-    # =========================================================
-    # TODAS AS VINÍCOLAS
-    # =========================================================
-
-    else:
-
-        pesquisa_vinicola = st.text_input(
-            "🔎 Search Wineries",
-            placeholder="Enter winery or producer name..."
-        )
-
-        # =====================================================
-        # CARREGA TODAS AS VINÍCOLAS
-        # =====================================================
-
-        df_vinicolas = pd.read_sql_query(
-            """
-            SELECT
-                v.id AS vinicola_id,
-                v.nome,
-                v.regiao,
-                v.subregiao,
-                v.pais,
-                v.visitada,
-                COUNT(DISTINCT vi.id) AS quantidade_vinhos,
-                v.instagram
+                v.instagram,
+                v.bandeira
             FROM vinicolas v
             LEFT JOIN vinhos vi
                 ON v.id = vi.vinicola_id
@@ -423,23 +423,57 @@ def show_wineries():
                 v.subregiao,
                 v.pais,
                 v.visitada,
-                v.instagram
+                v.instagram,
+                v.bandeira
             ORDER BY v.nome ASC
             """,
             conexao
         )
 
-        # =====================================================
-        # FILTRO DE PESQUISA
-        # =====================================================
+    # =====================================================
+    # FILTROS
+    # =====================================================
 
-        df_filtrado_vinicola = df_vinicolas.copy()
+    df_filtrado_vinicola = df_vinicolas.copy()
 
-        if pesquisa_vinicola.strip() != "":
+    # -----------------------------------------------------
+    # FILTRO POR PAÍS / VISITADAS
+    # -----------------------------------------------------
 
-            termo_vinicola = pesquisa_vinicola.lower()
-
+    if opcoes_filtro_selecionado == "Brasil":
             df_filtrado_vinicola = df_filtrado_vinicola[
+                df_filtrado_vinicola["pais"].str.lower() == "brasil"
+            ]
+
+    elif opcoes_filtro_selecionado == "Portugal":
+            df_filtrado_vinicola = df_filtrado_vinicola[
+                df_filtrado_vinicola["pais"].str.lower() == "portugal"
+            ]
+
+    elif opcoes_filtro_selecionado == "Argentina":
+            df_filtrado_vinicola = df_filtrado_vinicola[
+                df_filtrado_vinicola["pais"].str.lower() == "argentina"
+            ]
+
+    elif opcoes_filtro_selecionado == "Chile":
+            df_filtrado_vinicola = df_filtrado_vinicola[
+                df_filtrado_vinicola["pais"].str.lower() == "chile"
+            ]
+
+    elif opcoes_filtro_selecionado == "✔️ Visitadas":
+            df_filtrado_vinicola = df_filtrado_vinicola[
+                df_filtrado_vinicola["visitada"] == 1
+            ]
+
+    # -----------------------------------------------------
+    # FILTRO DE PESQUISA
+    # -----------------------------------------------------
+
+    if pesquisa_vinicola.strip() != "":
+            
+        termo_vinicola = pesquisa_vinicola.strip().lower()
+
+        df_filtrado_vinicola = df_filtrado_vinicola[
                 df_filtrado_vinicola.astype(str)
                 .apply(
                     lambda coluna:
@@ -451,24 +485,24 @@ def show_wineries():
                 .any(axis=1)
             ]
 
-            if len(df_filtrado_vinicola) == 0:
+    # =====================================================
+    # RESULTADO DA PESQUISA
+    # =====================================================
 
+    if pesquisa_vinicola.strip() != "" or opcoes_filtro_selecionado != "Todas":
+            
+        if len(df_filtrado_vinicola) == 0:
+                st.info("Nenhuma vinícola encontrada.")
+        else:
                 st.info(
-                    "No wineries found."
+                    f"{len(df_filtrado_vinicola)} vinícola(s) encontrada(s)."
                 )
 
-            else:
+    # =====================================================
+    # MANTÉM SOMENTE AS COLUNAS NECESSÁRIAS
+    # =====================================================
 
-                st.info(
-                    f"Found {len(df_filtrado_vinicola)} "
-                    f"winery/wineries matching your search."
-                )
-
-        # =====================================================
-        # MANTÉM SOMENTE AS COLUNAS NECESSÁRIAS
-        # =====================================================
-
-        df_vinicolas = df_filtrado_vinicola[
+    df_vinicolas = df_filtrado_vinicola[
             [
                 "vinicola_id",
                 "nome",
@@ -477,7 +511,8 @@ def show_wineries():
                 "pais",
                 "quantidade_vinhos",
                 "visitada",
-                "instagram"
+                "instagram",
+                "bandeira"
             ]
         ]
 
@@ -488,25 +523,7 @@ def show_wineries():
     conexao.close()
 
     # =========================================================
-    # VERIFICAR SE EXISTEM VINÍCOLAS
-    # =========================================================
-
-    pesquisa_atual = ""
-
-    if not regiao_selecionada:
-        pesquisa_atual = pesquisa_vinicola
-
-    if (
-        len(df_vinicolas) == 0
-        and len(pesquisa_atual.strip()) == 0
-    ):
-        st.info(
-            "No wineries registered."
-        )
-        return
-
-    # =========================================================
-    # LISTA MOBILE DE VINÍCOLAS
+    # LISTA VINÍCOLAS
     # =========================================================
 
     df_lista = df_vinicolas.copy()
@@ -575,10 +592,7 @@ def show_wineries():
 
         regiao = linha["regiao"]
 
-        if pd.isna(pais) or str(pais).strip() == "":
-            pais = "Country not specified"
-        else:
-            pais = str(pais).strip()
+        bandeira = linha["bandeira"]
 
         # -----------------------------------------------------
         # QUANTIDADE DE VINHOS
@@ -594,9 +608,9 @@ def show_wineries():
         )
 
         texto_vinhos = (
-            "1 wine"
+            "1 vinho"
             if quantidade_vinhos == 1
-            else f"{quantidade_vinhos} wines"
+            else f"{quantidade_vinhos} vinhos"
         )
 
         # -----------------------------------------------------
@@ -610,50 +624,80 @@ def show_wineries():
             or visitada == 1
             or str(visitada).lower() == "true"
         ):
-            indicador_visitada = " · ✓ Visited"
+            indicador_visitada = " · ✓ Visitada"
         else:
             indicador_visitada = ""
 
         # -----------------------------------------------------
-        # TEXTO SECUNDÁRIO
+        # BANDEIRA
         # -----------------------------------------------------
 
-        texto_secundario = (
-            f"🌎 {pais} · 🍷 {texto_vinhos}"
-            f"{indicador_visitada}"
-        )
+        # Puxa a bandeira em PNG (usando a função de base64 criada)
+        bandeira_html = obter_bandeira_png(bandeira, width=18)
 
         # -----------------------------------------------------
-        # BOTÃO DA VINÍCOLA
+        # EXIBIR CARD DA VINÍCOLA
         # -----------------------------------------------------
 
-        if st.button(
-            f"🏛️ {nome}\n\n{texto_secundario}",
-            key=f"vinicola_{linha['vinicola_id']}",
-            width="stretch"
-        ):
-
-            st.session_state["vinicola_selecionada"] = (
-                linha["vinicola_id"]
+        # Cria o card com borda nativa arredondada
+        with st.container(border=True):
+            # Renderiza o visual do card com nome, bandeira e informações
+            st.markdown(
+                f"""
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                    <div>
+                        <div style="font-weight: 600; font-size: 20px; color: #1a1a1a;">
+                            {nome}
+                        </div>
+                        <div style="font-size: 15px; color: #666; display: flex; align-items: center; margin-top: 2px;">
+                            {bandeira_html} <span>{pais}</span> &nbsp;•&nbsp; <span>{regiao}</span>
+                        </div>
+                    </div>
+                    <div style="
+                        background-color: #6A1B29;
+                        color: white;
+                        font-size: 15px;
+                        font-weight: 600;
+                        padding: 4px 8px;
+                        border-radius: 20px;
+                        white-space: nowrap;
+                    ">
+                        {texto_vinhos}
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
             )
 
-            st.rerun()
+            # CSS customizado para o botão "Ver vinícola"
+            st.markdown("""
+            <style>
+                /* Estiliza o botão dentro do card */
+                div[data-testid="stVerticalBlock"] div.stButton > button {
+                    background-color: #6A1B29 !important; /* Cor de fundo (ex: bordô) */
+                    color: #ffffff !important;           /* Cor do texto (branco) */
+                    border: none !important;             /* Remove a borda padrão */
+                    border-radius: 8px !important;       /* Cantos arredondados */
+                    font-weight: 500 !important;
+                    font-size: 14px !important;
+                    padding: 6px 12px !important;
+                    transition: opacity 0.2s ease, transform 0.1s ease;
+                }
 
-    # =========================================================
-    # FILTRO POR REGIÃO
-    # =========================================================
-
-    if regiao_selecionada:
-
-        st.markdown("<br>", unsafe_allow_html=True)
-
-        if st.button(
-                "← View ALL Wineries & Producers",
-                key="ver_todas_vinicolas",
+                /* Efeito ao passar o mouse ou tocar */
+                div[data-testid="stVerticalBlock"] div.stButton > button:hover,
+                div[data-testid="stVerticalBlock"] div.stButton > button:active {
+                    opacity: 0.9 !important;
+                    transform: scale(0.99);
+                }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            # Botão de ação direta dentro do card
+            if st.button(
+                "Explorar Vinícola -›",
+                key=f"vinicola_{linha['vinicola_id']}",
                 width="stretch"
             ):
-
-
-            st.session_state["regiao_selecionada"] = None
-
-            st.rerun()
+                st.session_state["vinicola_selecionada"] = linha["vinicola_id"]
+                st.rerun()
