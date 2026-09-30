@@ -79,7 +79,7 @@ def show_regions():
 
 
     # =========================================================
-    # IMAGENS
+    # IMAGENS REGIÕES
     # =========================================================
 
     imagens_regioes = {
@@ -96,7 +96,6 @@ def show_regions():
         "Salta": "salta.jpg",
         "Lisboa": "lisboa.jpg",
         "Dão": "dao.jpg",
-        "Friuli-Venezia Giulia": "friuli-venezia giulia.jpg",
         "Vallée du Rhône": "rhone.jpg",
         "Toscana": "toscana.jpg",
         "Rioja": "rioja.jpg",

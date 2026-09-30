@@ -154,7 +154,6 @@ def mostrar_detalhes_vinicola(vinicola_id):
         "Salta": "salta.jpg",
         "Lisboa": "lisboa.jpg",
         "Dão": "dao.jpg",
-        "Friuli-Venezia Giulia": "friuli-venezia giulia.jpg",
         "Vallée du Rhône": "rhone.jpg",
         "Toscana": "toscana.jpg",
         "Rioja": "rioja.jpg",
@@ -431,6 +430,8 @@ def mostrar_detalhes_vinicola(vinicola_id):
     ):
         st.session_state["vinicola_selecionada"] = None
         st.rerun()
+
+    st.session_state["vinicola_selecionada"] = None
 
 
 def show_wineries():
