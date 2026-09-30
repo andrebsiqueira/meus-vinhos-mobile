@@ -61,7 +61,10 @@ def show_initial():
     except FileNotFoundError:
         st.error(f"Imagem não encontrada no caminho: {caminho_imagem}")
 
-    time.sleep(2)
+    # Executa somente uma vez por sessão
+    if "initial_sleep_done" not in st.session_state:
+        time.sleep(2)
+        st.session_state["initial_sleep_done"] = True
 
     # CSS para transformar o st.container(border=True) no card estilizado
     st.markdown(
