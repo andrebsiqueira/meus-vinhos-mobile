@@ -76,6 +76,22 @@ def show_lab():
             "A space to experiment, test and explore new features."
         )
 
+    st.subheader("Vinícolas & Produtores")
+
+    # 2. As pílulas de filtro
+    opcoes = ["Todos", "Brasil", "Portugal", "Argentina", "Chile", "Uruguai"]
+
+    pais_selecionado = st.pills(
+        label="Filtrar por país",
+        options=opcoes,
+        default="Todos",
+        selection_mode="single",        # ou "multi" se quiser marcar vários ao mesmo tempo
+        label_visibility="collapsed"    # esconde o texto do label para poupar espaço vertical
+    )
+
+    # Feedback visual do que foi selecionado
+    st.caption(f"Filtro ativo: **{pais_selecionado}**")
+
     caminho = Path(__file__).resolve().parent / "flag_images" / "br.png"
 
     # Testando:
