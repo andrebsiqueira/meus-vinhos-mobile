@@ -409,7 +409,6 @@ def show_wineries():
             "Chile",
             "Itália",
             "Espanha",
-            "Canada",
             "França",
             "✔️ Visitadas"
         ]
@@ -498,10 +497,6 @@ def show_wineries():
                 df_filtrado_vinicola["pais"].str.lower() == "espanha"
             ]
 
-    elif opcoes_filtro_selecionado == "Canada":
-            df_filtrado_vinicola = df_filtrado_vinicola[
-                df_filtrado_vinicola["pais"].str.lower() == "canada"
-            ]
 
     elif opcoes_filtro_selecionado == "França":
             df_filtrado_vinicola = df_filtrado_vinicola[
