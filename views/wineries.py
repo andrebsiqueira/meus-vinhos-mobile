@@ -6,6 +6,10 @@ from banco import conectar
 import base64
 from pathlib import Path
 
+from funcoes import (
+    localizar_imagem_regiao
+)
+
 @st.cache_data
 def obter_bandeira_png(country_code, width=20):
     """
@@ -132,7 +136,62 @@ def mostrar_detalhes_vinicola(vinicola_id):
 
     vinicola = df.iloc[0]
 
-    st.markdown(f'### {vinicola["nome"]}')
+    # =========================================================
+    # IMAGENS REGIÕES
+    # =========================================================
+
+    imagens_regioes = {
+        "Mendoza": "mendoza.jpg",
+        "Alentejo": "alentejo.jpg",
+        "Montevidéu": "montevideu.jpg",
+        "Serra Gaúcha": "serragaucha.jpg",
+        "Rías Baixas": "riasbaixas.jpg",
+        "Valle del Colchagua": "valledelcolchagua.jpg",
+        "Douro": "douro.jpg",
+        "Ontario": "ontario.jpg",
+        "Bairrada": "bairrada.jpg",
+        "Valle del Cachapoal": "valledelcachapoal.jpg",
+        "Salta": "salta.jpg",
+        "Lisboa": "lisboa.jpg",
+        "Dão": "dao.jpg",
+        "Friuli-Venezia Giulia": "friuli-venezia giulia.jpg",
+        "Vallée du Rhône": "rhone.jpg",
+        "Toscana": "toscana.jpg",
+        "Rioja": "rioja.jpg",
+        "Veneto": "veneto.jpg",
+        "Puglia": "puglia.jpg",
+        "Vinhos Verdes": "vinhosverdes.jpg",
+        "Península de Setúbal": "setubal.jpg",
+        "Catalunha": "catalunha.jpg",
+        "Serra Catarinense": "serracatarinense.jpg",
+        "Valle del Maipo": "valledelmaipo.jpg"
+    }
+
+    nome_regiao = str(vinicola["regiao"])
+
+    nome_arquivo = imagens_regioes.get(nome_regiao)
+
+    caminho_imagem = None
+
+    if nome_arquivo:
+        caminho_imagem = localizar_imagem_regiao(
+            nome_arquivo
+        )
+    else:
+        caminho_imagem = localizar_imagem_regiao(
+            "sem_imagem_regiao.jpg"
+        )
+
+    bandeira = vinicola["bandeira"]
+
+    #Puxa a bandeira em PNG (usando a função de base64 criada)
+    bandeira_html = obter_bandeira_png(bandeira, width=18)
+
+    #base_dir = Path(__file__).resolve().parent.parent
+    #caminho_imagem = base_dir / "region_images" / "serragaucha.jpg"
+
+    with open(caminho_imagem, "rb") as f:
+        encoded = base64.b64encode(f.read()).decode("utf-8")
 
     # PAÍS / REGIÃO
     pais = vinicola["pais"]
@@ -149,6 +208,8 @@ def mostrar_detalhes_vinicola(vinicola_id):
 
     if pd.isna(subregiao) or str(subregiao).strip() == "":
         subregiao = ""
+    else:
+        subregiao = "/ " + vinicola["subregiao"]
 
     cidade = vinicola["cidade"]
 
@@ -158,17 +219,45 @@ def mostrar_detalhes_vinicola(vinicola_id):
     st.markdown(
         f"""
         <div style="
-            text-align: left;
-            font-size: 16px;
-            line-height: 1.7;
-            margin-bottom: 15px;
+            position: relative;
+            height: 180px;
+            border-radius: 12px;
+            overflow: hidden;
+            background-image: url('data:image/png;base64,{encoded}');
+            background-size: cover;
+            background-position: center;
         ">
-            🌎 <b>{pais}</b><br>
-            📍 {regiao}
+            <div style="
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                padding: 30px 16px 14px 16px;
+                background: linear-gradient(
+                    transparent,
+                    rgba(0,0,0,0.75)
+                );
+                color: white;
+            ">
+                <div style="
+                    font-size: 30px;
+                    font-weight: 600;
+                ">
+                    {vinicola["nome"]}
+                </div>
+                <div style="
+                    font-size: 15px;
+                    margin-top: 4px;
+                ">
+                    {bandeira_html} {pais} • {regiao} {subregiao}
+                </div>
+            </div>
         </div>
         """,
         unsafe_allow_html=True
     )
+
+    #st.markdown(f'### {vinicola["nome"]}')
 
     # DESCRIÇÃO
     descricao = vinicola["descricao"]
@@ -177,7 +266,7 @@ def mostrar_detalhes_vinicola(vinicola_id):
         not pd.isna(descricao)
         and str(descricao).strip() != ""
     ):
-        st.markdown("### About")
+        st.markdown("### Sobre")
         st.markdown(str(descricao))
 
     # SITE
@@ -200,15 +289,15 @@ def mostrar_detalhes_vinicola(vinicola_id):
         st.markdown("### Instagram")
         st.markdown(str(instagram))
 
-    st.markdown(f'### My Experience with {vinicola["nome"]}')
+    st.markdown(f'### Minha experiência com a Vinícola')
 
     # QUANTIDADE DE VINHOS
     quantidade = int(vinicola["quantidade_vinhos"] or 0)
 
     texto_vinhos = (
-        "1 wine"
+        "1 vinho"
         if quantidade == 1
-        else f"{quantidade} wines"
+        else f"{quantidade} vinhos"
     )
 
     # VISITADA
@@ -219,7 +308,7 @@ def mostrar_detalhes_vinicola(vinicola_id):
         or texto_visitada == 1
         or str(texto_visitada).lower() == "true"
     ):
-        texto_visitada = "✓ <b>Visited</b>"
+        texto_visitada = "✓ <b>Visitada</b>"
     else:
          texto_visitada = "-"       
 
@@ -302,7 +391,7 @@ def mostrar_detalhes_vinicola(vinicola_id):
                         font-size: 17px;
                         font-weight: 600;
                     ">
-                        🍷 {nome_vinho} {texto_safra}
+                        {nome_vinho} {texto_safra}
                     </div>
                 </div>
                 """,
@@ -398,7 +487,7 @@ def show_wineries():
 
     pesquisa_vinicola = st.text_input(
             "🔎 Pesquisar Vinícolas",
-            placeholder="Digite o nome da vinícola, produtor, região, país..."
+            placeholder="Pesquise por vinícola, produtor, região, país..."
         )
 
     opcoes_filtro = [
@@ -738,7 +827,7 @@ def show_wineries():
             
             # Botão de ação direta dentro do card
             if st.button(
-                "Explorar Vinícola -›",
+                "Explorar Vinícola →",
                 key=f"vinicola_{linha['vinicola_id']}",
                 width="stretch"
             ):
