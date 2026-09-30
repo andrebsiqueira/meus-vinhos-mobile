@@ -407,6 +407,10 @@ def show_wineries():
             "Portugal",
             "Argentina",
             "Chile",
+            "Itália",
+            "Espanha",
+            "Canada",
+            "França",
             "✔️ Visitadas"
         ]
 
@@ -482,6 +486,26 @@ def show_wineries():
     elif opcoes_filtro_selecionado == "Chile":
             df_filtrado_vinicola = df_filtrado_vinicola[
                 df_filtrado_vinicola["pais"].str.lower() == "chile"
+            ]
+
+    elif opcoes_filtro_selecionado == "Itália":
+            df_filtrado_vinicola = df_filtrado_vinicola[
+                df_filtrado_vinicola["pais"].str.lower() == "itália"
+            ]
+
+    elif opcoes_filtro_selecionado == "Espanha":
+            df_filtrado_vinicola = df_filtrado_vinicola[
+                df_filtrado_vinicola["pais"].str.lower() == "espanha"
+            ]
+
+    elif opcoes_filtro_selecionado == "Canada":
+            df_filtrado_vinicola = df_filtrado_vinicola[
+                df_filtrado_vinicola["pais"].str.lower() == "canada"
+            ]
+
+    elif opcoes_filtro_selecionado == "França":
+            df_filtrado_vinicola = df_filtrado_vinicola[
+                df_filtrado_vinicola["pais"].str.lower() == "frança"
             ]
 
     elif opcoes_filtro_selecionado == "✔️ Visitadas":
