@@ -19,6 +19,16 @@ from funcoes_acesso import (
 )
 
 # ============================================================
+# CONFIGURAÇÃO DA PÁGINA
+# ============================================================
+
+st.set_page_config(
+    page_title="Meus Vinhos Mobile APP",
+    page_icon="🍷",
+    layout="wide"
+)
+
+# ============================================================
 # INITIAL
 # ============================================================
 # Cria o registro do acesso somente uma vez por sessão.
@@ -32,16 +42,6 @@ if "sessao_cloud" not in st.session_state:
 if not st.session_state.get("initial_completed", False):
     show_initial()
     st.stop()
-
-# ============================================================
-# CONFIGURAÇÃO DA PÁGINA
-# ============================================================
-
-st.set_page_config(
-    page_title="Meus Vinhos Mobile APP",
-    page_icon="🍷",
-    layout="wide"
-)
 
 # ============================================================
 # CSS GLOBAL
