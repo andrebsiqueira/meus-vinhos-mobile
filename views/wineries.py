@@ -311,9 +311,33 @@ def mostrar_detalhes_vinicola(vinicola_id):
 
     st.markdown("<br>", unsafe_allow_html=True)
 
+    # CSS customizado para o botão "Explorar Vinícola"
+    st.markdown("""
+            <style>
+            /* Botão Explorar Vinícola */
+            div.stButton > button {
+                background-color: #6A1B29 !important;
+                color: white !important;
+                border: none !important;
+                border-radius: 8px !important;
+                padding: 4px 8px !important;
+            }
+            /* Texto dentro do botão */
+            div.stButton > button p {
+                font-size: 14px !important;
+                font-weight: 500 !important;
+                margin: 0 !important;
+            }
+            /* Hover */
+            div.stButton > button:hover {
+                opacity: 0.9 !important;
+            }
+            </style>
+            """, unsafe_allow_html=True)
+
     # VOLTAR
     if st.button(
-        "← Back to Wineries",
+        "← Voltar para TODAS as Vinícolas",
         width="stretch"
     ):
         st.session_state["vinicola_selecionada"] = None
@@ -624,7 +648,7 @@ def show_wineries():
             or visitada == 1
             or str(visitada).lower() == "true"
         ):
-            indicador_visitada = " · ✓ Visitada"
+            indicador_visitada = "✓ Visitada"
         else:
             indicador_visitada = ""
 
@@ -669,7 +693,7 @@ def show_wineries():
                 unsafe_allow_html=True
             )
 
-            # CSS customizado para o botão "Ver vinícola"
+            # CSS customizado para o botão "Explorar Vinícola"
             st.markdown("""
             <style>
             /* Botão Explorar Vinícola */
