@@ -71,12 +71,12 @@ def show_initial():
     st.markdown(
         f"""
         <div style="
-            background: rgba(255, 255, 255, 0.88);
+            background: rgba(255, 255, 255, 0.80);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: 20px;
-            padding: 24px 20px;
+            padding: 12px 16px;
             margin: 20px auto 15px auto;
             max-width: 380px;
             text-align: center;
@@ -112,22 +112,75 @@ def show_initial():
         unsafe_allow_html=True,
     )
 
+    # CSS para criar o card de validação, botão com destaque e ocultar o header
+    st.markdown(
+        """
+        <style>
+        /* 1. Ocultar cabeçalho do Streamlit (Share, GitHub, etc.) */
+        header[data-testid="stHeader"] {
+            display: none !important;
+        }
+        .block-container {
+            padding-top: 1.5rem !important;
+        }
+
+        /* 2. Fundo e moldura para o bloco de validação */
+        .auth-card {
+            background: rgba(255, 255, 255, 0.90);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 1.2rem 1.2rem 0.8rem 1.2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Input com fundo branco sólido e borda definida */
+        div[data-testid="stTextInput"] input {
+            background-color: #ffffff !important;
+            color: #222222 !important;
+            border-radius: 10px !important;
+            border: 1px solid #d0d0d0 !important;
+            padding: 10px 14px !important;
+            font-size: 0.95rem !important;
+        }
+
+        /* 3. Destaque para o botão Continue (vinho/bordô combinando com o tema) */
+        div[data-testid="stButton"] button {
+            background-color: #722F37 !important; /* Tom vinho bordô */
+            color: #ffffff !important;
+            font-weight: 600 !important;
+            border-radius: 10px !important;
+            border: none !important;
+            padding: 0.55rem 1rem !important;
+            box-shadow: 0 2px 6px rgba(114, 47, 55, 0.35) !important;
+            transition: 0.2s all ease-in-out;
+        }
+        div[data-testid="stButton"] button:hover {
+            background-color: #581d24 !important;
+            color: #ffffff !important;
+        }    
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # Bloco do seu código dentro do container estilizado:
+    #st.markdown('<div class="auth-card">', unsafe_allow_html=True)
+
     nome = st.text_input(
-        "Name",
+        "Nome",
         placeholder="Digite seu nome para validar o acesso..",
         label_visibility="collapsed",
         key="initial_nome"
     )
 
-    if st.button(
-        "Continue 🍷",
-        width="stretch"
-    ):
-
+    if st.button("Continue 🍷", use_container_width=True):
         nome = nome.strip()
 
         if not nome:
-            st.warning("Por favor digite seu nome.")
+            #st.warning("Por favor digite seu nome.")
             st.stop()
 
         atualizar_nome_acesso(nome)
@@ -136,3 +189,5 @@ def show_initial():
         st.session_state["initial_completed"] = True
 
         st.rerun()
+
+    st.markdown('</div>', unsafe_allow_html=True)
