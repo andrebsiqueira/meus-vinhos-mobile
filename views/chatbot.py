@@ -20,7 +20,7 @@ def show_chatbot():
         "Every vintage has a story to tell.",
         "The best wines are the ones we remember.",
         "A bottle shared is a memory made.",
-        "Wine is about place, time, and people.",
+        "Wine is about place, time and people.",
         "Explore the world one bottle at a time.",
         "Sometimes the best plans begin with a bottle of wine.",
         "Open a bottle, open a story.",

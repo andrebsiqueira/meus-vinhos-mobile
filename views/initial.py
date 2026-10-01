@@ -4,6 +4,8 @@ from pathlib import Path
 import base64
 import time
 
+import random
+
 from funcoes_acesso import (
     criar_usuario_acesso,
     atualizar_nome_acesso
@@ -66,6 +68,32 @@ def show_initial():
         time.sleep(3)
         st.session_state["initial_sleep_done"] = True
 
+    wine_quotes = [
+        "Gemini is AI and can make mistakes.",
+        "Every bottle tells a story.",
+        "Good wine, good company, good memories.",
+        "Wine is the poetry of the table.",
+        "A great wine is an experience, not just a drink.",
+        "Wine brings people together.",
+        "Life is too short for ordinary wine.",
+        "There is always a story behind a bottle.",
+        "Good wine deserves good company.",
+        "Discover. Taste. Remember.",
+        "One bottle, many memories.",
+        "Wine turns moments into memories.",
+        "Every vintage has a story to tell.",
+        "The best wines are the ones we remember.",
+        "A bottle shared is a memory made.",
+        "Wine is about place, time and people.",
+        "Explore the world one bottle at a time.",
+        "Sometimes the best plans begin with a bottle of wine.",
+        "Open a bottle, open a story.",
+        "Wine makes ordinary moments memorable.",
+        "Collect bottles. Create memories.",
+        "Good wine is meant to be enjoyed.",
+        "Behind every bottle, there is a journey."
+    ]
+
     # CSS para transformar o st.container(border=True) no card estilizado
     st.markdown(
         """
@@ -90,6 +118,8 @@ def show_initial():
         unsafe_allow_html=True,
     )
 
+    frase = random.choice(wine_quotes)
+
     st.markdown(
         f"""
         <div style="
@@ -110,17 +140,27 @@ def show_initial():
                 margin: 0;
                 font-weight: 500;
             ">
-                Olá! Seja Bem-vindo ao<br>
+                Olá! Seja Bem-vindo ao<br><br>
             </p>
             <h2 style="
                 color: #1a1a1a;
                 font-size: 2.25rem;
                 font-weight: 700;
                 margin: 0 0 8px 0;
-                line-height: 1.3;
+                line-height: 0.3;
             ">
                 Meus Vinhos App<br>
             </h2>
+            <p style="
+                color: #555555;
+                font-size: 0.95rem;
+                margin: 0;
+                opacity: 0.80;
+                font-weight: 500;
+                font-style: italic;       
+            ">
+                "{frase}"<br><br>
+            </p>
             <p style="
                 color: #555555;
                 font-size: 0.95rem;
