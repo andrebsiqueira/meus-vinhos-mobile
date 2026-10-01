@@ -118,7 +118,10 @@ def show_initial():
         unsafe_allow_html=True,
     )
 
-    frase = random.choice(wine_quotes)
+    if "frase_inicial" not in st.session_state:
+        st.session_state["frase_inicial"] = random.choice(wine_quotes)
+
+    frase = st.session_state["frase_inicial"]
 
     st.markdown(
         f"""
