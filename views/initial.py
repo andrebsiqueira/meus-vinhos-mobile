@@ -185,12 +185,12 @@ def show_initial():
 
     nome = st.text_input(
         "Nome",
-        placeholder="Digite seu nome para validar o acesso..",
+        placeholder="Digite seu nome..",
         label_visibility="collapsed",
         key="initial_nome"
     )
 
-    if st.button("Continue 🍷", use_container_width=True):
+    if st.button("Continuar 🍷", use_container_width=True):
         nome = nome.strip()
 
         if not nome:
