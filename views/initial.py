@@ -110,7 +110,7 @@ def show_initial():
                 margin: 0;
                 font-weight: 500;
             ">
-                Olá, seja Bem-vindo ao<br>
+                Olá! Seja Bem-vindo ao<br>
             </p>
             <h2 style="
                 color: #1a1a1a;
