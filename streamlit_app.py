@@ -248,7 +248,6 @@ elif selected == "LAB":
     registrar_pagina("LAB")
     show_lab()
 
-
 elif selected == "Settings":
 
     registrar_pagina("Settings")
