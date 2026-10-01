@@ -68,7 +68,7 @@ def show_initial():
         time.sleep(3)
         st.session_state["initial_sleep_done"] = True
 
-    wine_quotes = [
+    wine_quotes = [ 
         "Gemini is AI and can make mistakes.",
         "Every bottle tells a story.",
         "Good wine, good company, good memories.",
@@ -86,7 +86,7 @@ def show_initial():
         "A bottle shared is a memory made.",
         "Wine is about place, time and people.",
         "Explore the world one bottle at a time.",
-        "Sometimes the best plans begin with a bottle of wine.",
+        "Sometimes the best plans begin <br>with a bottle of wine.",
         "Open a bottle, open a story.",
         "Wine makes ordinary moments memorable.",
         "Collect bottles. Create memories.",
