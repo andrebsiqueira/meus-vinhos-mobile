@@ -277,11 +277,13 @@ def show_people():
 
             # Pessoa selecionada → todos os vinhos
             nomes_ultimos = vinhos_pessoa["vinho"].tolist()
+            texto_exibir_ultimos = "Todos os vinhos:"
 
         else:
 
             # Lista normal → apenas os 3 últimos
             nomes_ultimos = vinhos_pessoa["vinho"].head(3).tolist()
+            texto_exibir_ultimos = "Últimos 3 vinhos:"
 
         if nomes_ultimos:
 
@@ -346,7 +348,7 @@ def show_people():
                     </div>
                     <div class="people-divider"></div>
                     <div class="people-info">
-                        🍷 Últimos vinhos:
+                        🍷 {texto_exibir_ultimos}
                     </div>
                     <div class="last-wines">
                         {texto_ultimos}
