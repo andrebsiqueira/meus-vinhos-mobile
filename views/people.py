@@ -5,6 +5,9 @@ from banco import conectar
 
 def show_people():
 
+    if "pessoa_selecionada" not in st.session_state:
+        st.session_state.pessoa_selecionada = None
+
     # ==========================================================
     # TÍTULO
     # ==========================================================
@@ -145,8 +148,15 @@ def show_people():
 
     conn = conectar()
 
+    filtro_pessoa = ""
+    parametros = []
+
+    if st.session_state.pessoa_selecionada is not None:
+        filtro_pessoa = "WHERE p.id = ?"
+        parametros.append(st.session_state.pessoa_selecionada)
+
     df = pd.read_sql_query(
-        """
+        f"""
         SELECT
             p.id,
             p.nome,
@@ -173,6 +183,8 @@ def show_people():
             ) LIKE
                 '%,' || REPLACE(p.abreviacao, ' ', '') || ',%'
 
+        {filtro_pessoa}
+
         GROUP BY
             p.id,
             p.nome,
@@ -183,7 +195,8 @@ def show_people():
             quantidade_vinhos DESC,
             p.nome
         """,
-        conn
+        conn,
+        params=parametros
     )
 
     conn.close()
@@ -256,13 +269,21 @@ def show_people():
         # Últimos vinhos
         # ------------------------------------------------------
 
-        ultimos = df_ultimos_vinhos[
+        vinhos_pessoa = df_ultimos_vinhos[
             df_ultimos_vinhos["pessoa_id"] == pessoa["id"]
-        ].head(3)
+        ]
 
-        if not ultimos.empty:
+        if st.session_state.pessoa_selecionada is not None:
 
-            nomes_ultimos = ultimos["vinho"].tolist()
+            # Pessoa selecionada → todos os vinhos
+            nomes_ultimos = vinhos_pessoa["vinho"].tolist()
+
+        else:
+
+            # Lista normal → apenas os 3 últimos
+            nomes_ultimos = vinhos_pessoa["vinho"].head(3).tolist()
+
+        if nomes_ultimos:
 
             texto_ultimos = "<br>".join(nomes_ultimos)
 
@@ -302,33 +323,78 @@ def show_people():
         # CARD
         # ------------------------------------------------------
 
-        st.markdown(
-            f"""
-            <div class="people-card">
-                <div class="people-header">
-                        <div class="people-initials">{abreviacao}</div>
-                    <div>
-                        <div class="people-name">
-                            {nome}
-                        </div>
+        with st.container(border=True):
+
+            st.markdown(
+                f"""
+                <div class="people-card">
+                    <div class="people-header">
+                            <div class="people-initials">{abreviacao}</div>
                         <div>
-                        <div class="people-ranking">
-                            {medalha} {ranking}
-                        </div>
-                        <div class="people-vinhos">
-                            {texto_garrafas}
-                        </div>
+                            <div class="people-name">
+                                {nome}
+                            </div>
+                            <div>
+                            <div class="people-ranking">
+                                {medalha} {ranking}
+                            </div>
+                            <div class="people-vinhos">
+                                {texto_garrafas}
+                            </div>
+                            </div>
                         </div>
                     </div>
+                    <div class="people-divider"></div>
+                    <div class="people-info">
+                        🍷 Últimos vinhos:
+                    </div>
+                    <div class="last-wines">
+                        {texto_ultimos}
+                    </div>
                 </div>
-                <div class="people-divider"></div>
-                <div class="people-info">
-                    🍷 Últimos vinhos:
-                </div>
-                <div class="last-wines">
-                    {texto_ultimos}
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+                """,
+                unsafe_allow_html=True
+            )
+
+            st.markdown("""
+            <style>
+            /* Botão Explorar Vinícola */
+            div.stButton > button {
+                background-color: #6A1B29 !important;
+                color: white !important;
+                border: none !important;
+                border-radius: 8px !important;
+                padding: 4px 8px !important;
+            }
+            /* Texto dentro do botão */
+            div.stButton > button p {
+                font-size: 14px !important;
+                font-weight: 500 !important;
+                margin: 0 !important;
+            }
+            /* Hover */
+            div.stButton > button:hover {
+                opacity: 0.9 !important;
+            }
+            </style>
+            """, unsafe_allow_html=True)
+
+            if st.session_state.get("pessoa_selecionada") is None:
+
+                if st.button(
+                    "Ver todos os Vinhos →",
+                    key=f"view_person_{pessoa['id']}",
+                    width="stretch"
+                ):
+                    st.session_state.pessoa_selecionada = pessoa["id"]
+                    st.rerun()
+
+            elif st.session_state.pessoa_selecionada == pessoa["id"]:
+
+                if st.button(
+                    "← Voltar",
+                    key=f"back_people_{pessoa['id']}",
+                    width="stretch"
+                ):
+                    st.session_state.pessoa_selecionada = None
+                    st.rerun()
