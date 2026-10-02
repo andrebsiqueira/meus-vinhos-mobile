@@ -90,6 +90,12 @@ def show_people():
         font-size: 15px;
         white-space: nowrap;
     }
+    .last-wines {
+        font-size: 15px;
+        color: #292929;
+        margin: 4px 0 12px 32px;
+        line-height: 1.5;
+    }
     /* Separador */
     .people-divider {
         border-top: 1px solid #dedede;
@@ -192,6 +198,45 @@ def show_people():
         return
 
     # ==========================================================
+    # BUSCAR OS ÚLTIMOS VINHOS DE CADA PESSOA
+    # ==========================================================
+
+    conn = conectar()
+
+    df_ultimos_vinhos = pd.read_sql_query(
+        """
+        SELECT
+            p.id AS pessoa_id,
+            v.id AS vinho_id,
+            v.nome AS vinho,
+            v.data_vinho
+        FROM pessoas p
+        JOIN vinhos v
+            ON (
+                ',' ||
+                REPLACE(
+                    REPLACE(
+                        COALESCE(v.pessoas, ''),
+                        ' e ',
+                        ', '
+                    ),
+                    ' ',
+                    ''
+                )
+                || ','
+            ) LIKE
+                '%,' || REPLACE(p.abreviacao, ' ', '') || ',%'
+        ORDER BY
+            p.id,
+            v.data_vinho DESC,
+            v.id DESC
+        """,
+        conn
+    )
+
+    conn.close()
+
+    # ==========================================================
     # RANKING
     # ==========================================================
 
@@ -207,6 +252,24 @@ def show_people():
         abreviacao = pessoa["abreviacao"] or "?"
         quantidade = int(pessoa["quantidade_vinhos"])
         ranking = int(pessoa["ranking"])
+
+        # ------------------------------------------------------
+        # Últimos vinhos
+        # ------------------------------------------------------
+
+        ultimos = df_ultimos_vinhos[
+            df_ultimos_vinhos["pessoa_id"] == pessoa["id"]
+        ].head(3)
+
+        if not ultimos.empty:
+
+            nomes_ultimos = ultimos["vinho"].tolist()
+
+            texto_ultimos = "<br>".join(nomes_ultimos)
+
+        else:
+
+            texto_ultimos = "No wines recorded yet"
 
         # ------------------------------------------------------
         # Texto da quantidade
@@ -261,12 +324,10 @@ def show_people():
                 </div>
                 <div class="people-divider"></div>
                 <div class="people-info">
-                    <span class="people-icon">🍷</span>
-                    Wine collection: {texto_garrafas}
+                    🍷 Últimos vinhos:
                 </div>
-                <div class="people-info">
-                    <span class="people-icon">🥂</span>
-                    Always ready for another toast!
+                <div class="last-wines">
+                    {texto_ultimos}
                 </div>
             </div>
             """,
