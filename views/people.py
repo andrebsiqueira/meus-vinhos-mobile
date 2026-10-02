@@ -93,8 +93,7 @@ def show_people():
     .last-wines {
         font-size: 15px;
         color: #292929;
-        margin: 4px 0 12px 32px;
-        line-height: 1.5;
+        margin: 4px 0 4px 8px;
     }
     /* Separador */
     .people-divider {
