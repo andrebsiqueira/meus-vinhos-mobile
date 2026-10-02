@@ -10,12 +10,12 @@ def show_people():
     # ==========================================================
 
     st.markdown(
-        '<div class="secao" style="font-size: 28px;">🤵🏻 People</div>',
+        '<div class="secao" style="font-size: 28px;">A Turma do Vinho</div>',
         unsafe_allow_html=True
     )
 
     st.info(
-        "Who is always there when it's time to open a bottle? 😄"
+        "Quem está sempre por perto quando chega a hora de abrir uma garrafa? 😄"
     )
 
     # ==========================================================
@@ -78,7 +78,16 @@ def show_people():
         color: #5a4314;
         border-radius: 18px;
         padding: 6px 12px;
-        font-size: 13px;
+        font-size: 15px;
+        white-space: nowrap;
+    }
+    .people-vinhos {
+        display: inline-block;
+        background: #6A1B29;
+        color: #FFFFFF;
+        border-radius: 18px;
+        padding: 6px 12px;
+        font-size: 15px;
         white-space: nowrap;
     }
     /* Separador */
@@ -145,7 +154,17 @@ def show_people():
 
         LEFT JOIN vinhos v
             ON (
-                ',' || REPLACE(COALESCE(v.pessoas, ''), ' ', '') || ','
+                ',' ||
+                REPLACE(
+                    REPLACE(
+                        COALESCE(v.pessoas, ''),
+                        ' e ',
+                        ', '
+                    ),
+                    ' ',
+                    ''
+                )
+                || ','
             ) LIKE
                 '%,' || REPLACE(p.abreviacao, ' ', '') || ',%'
 
@@ -194,22 +213,22 @@ def show_people():
         # ------------------------------------------------------
 
         if quantidade == 1:
-            texto_garrafas = "1 bottle"
+            texto_garrafas = "1 vinho"
         else:
-            texto_garrafas = f"{quantidade} bottles"
+            texto_garrafas = f"{quantidade} vinhos"
 
         # ------------------------------------------------------
         # Medalha
         # ------------------------------------------------------
 
         if ranking == 1:
-            medalha = "🥇"
+            medalha = "🥇 Top"
         elif ranking == 2:
-            medalha = "🥈"
+            medalha = "🥈 Top"
         elif ranking == 3:
-            medalha = "🥉"
+            medalha = "🥉 Top"
         else:
-            medalha = "🏅"
+            medalha = "#"
 
         # ------------------------------------------------------
         # Foto
@@ -230,8 +249,13 @@ def show_people():
                         <div class="people-name">
                             {nome}
                         </div>
+                        <div>
                         <div class="people-ranking">
-                            {medalha} Top {ranking} • {texto_garrafas}
+                            {medalha} {ranking}
+                        </div>
+                        <div class="people-vinhos">
+                            {texto_garrafas}
+                        </div>
                         </div>
                     </div>
                 </div>
